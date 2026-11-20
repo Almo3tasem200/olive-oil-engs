@@ -59,6 +59,31 @@ export async function HomeView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
         </div>
       </section>
 
+      <section className='container-shell grid items-center gap-8 py-14 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]' id='about'>
+        <div className='relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-full bg-[var(--olive-950)] p-4 shadow-lg'>
+          <Image
+            src='/reference-assets/brand-logo.jpg'
+            alt={english ? 'El Mohandeseen Olive Oil logo' : 'شعار زيت زيتون المهندسين'}
+            fill
+            sizes='(max-width: 768px) 80vw, 320px'
+            className='object-contain p-3'
+          />
+        </div>
+        <div className={english ? 'text-left' : 'text-right'}>
+          <p className='text-sm font-bold text-[var(--olive-600)]'>{english ? 'About the company' : 'عن الشركة'}</p>
+          <h2 className='mt-1 text-3xl font-extrabold text-[var(--olive-950)]'>{english ? 'El Mohandeseen Olive Oil' : 'زيت زيتون المهندسين'}</h2>
+          <p className='mt-4 max-w-2xl text-lg leading-8 text-[var(--muted)]'>
+            {english
+              ? 'We are a company dedicated to providing olive oil products.'
+              : 'نحن شركة متخصصة في تقديم منتجات زيت الزيتون.'}
+          </p>
+          <div className='mt-5 flex flex-wrap gap-3'>
+            {settings?.whatsapp && <a className='btn-secondary' href={'https://wa.me/' + settings.whatsapp.replace(/\D/g, '')} target='_blank' rel='noreferrer'>{english ? 'Message us on WhatsApp' : 'راسلنا على واتساب'}</a>}
+            {settings?.instagramUrl && <a className='btn-secondary' href={settings.instagramUrl} target='_blank' rel='noreferrer'>Instagram</a>}
+          </div>
+        </div>
+      </section>
+
       <section className='container-shell py-16' id='products'>
         <div className='mb-8 flex flex-wrap items-end justify-between gap-4'>
           <div>
@@ -128,7 +153,7 @@ export async function HomeView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
         <div className='grid gap-4 md:grid-cols-3'>
           {(english
             ? [
-                ['Do I need an account?', 'No. You can place an order as a guest.'],
+                ['Do I need an account?', 'No. Check out as a guest, or create an account to see orders placed while signed in.'],
                 ['When will I see the delivery fee?', 'Choose a supported area to see the configured fee before confirming.'],
                 ['How can I pay?', settings?.codEnabled ? 'Cash on delivery is currently available.' : 'Payment options are shown at checkout when enabled by the store.'],
               ]

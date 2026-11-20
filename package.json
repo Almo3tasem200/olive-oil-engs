@@ -16,6 +16,7 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx prisma/seed.ts",
+    "db:import-reference-assets": "tsx scripts/import-reference-assets.ts",
     "admin:create": "tsx scripts/create-admin.ts",
     "postinstall": "prisma generate"
   },

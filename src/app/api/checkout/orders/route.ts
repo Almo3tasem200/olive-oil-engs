@@ -5,6 +5,7 @@ import { CommerceError, quoteCart } from '@/lib/orders';
 import { parseBody, apiFailure } from '@/lib/http';
 import { clientAddress, consumeRateLimit } from '@/lib/rate-limit';
 import { isSameOriginRequest } from '@/lib/csrf';
+import { getCurrentCustomer } from '@/lib/customer-auth';
 
 export const runtime = 'nodejs';
 
@@ -25,7 +26,8 @@ export async function POST(request: Request) {
   if (!parsed.success) return parsed.response;
 
   try {
-    const result = await createOrder(parsed.data);
+    const customer = await getCurrentCustomer();
+    const result = await createOrder(parsed.data, customer?.id);
     const response = NextResponse.json({
       orderNumber: result.orderNumber,
       totalPiasters: result.totalPiasters,

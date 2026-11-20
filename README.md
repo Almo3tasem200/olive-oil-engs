@@ -4,9 +4,9 @@ Arabic-first e-commerce application for El Mohandeseen Olive Oil.
 
 ## Current state
 
-The app is being implemented. Initial catalog prices are stored in the database seed, not in the storefront. The seed creates the three products with these values: 500 ml EGP 275, 1 liter EGP 550, and 12 liters EGP 6,100. Products start unpublished because approved product photos were not included with the brief. Upload the real photos and then publish each product in Admin.
+Initial catalog prices are stored in the database seed, not in the storefront: 500 ml EGP 275, 1 liter EGP 550, and 12 liters EGP 6,100. Prices remain owner-managed. The supplied reference storefront provides a brand logo and 500 ml / 1 liter product photos; those matching products can be published with the asset-import step below. The 12 liter product stays unpublished until its own matching photo is approved.
 
-Delivery zones and COD start disabled/unconfigured. Configure these in Admin after the business owner confirms the live policy. No external email, WhatsApp, or payment provider is active by default.
+Delivery zones and COD start disabled/unconfigured. Configure these in Admin after the business owner confirms the live policy. A direct WhatsApp contact link can be shown; no messaging API, email service, or payment provider is configured by default.
 
 ## Requirements
 
@@ -22,10 +22,11 @@ Delivery zones and COD start disabled/unconfigured. Configure these in Admin aft
 3. Install packages with npm install.
 4. Create tables with npm run db:migrate.
 5. Seed the store with npm run db:seed.
-6. Set INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD in the shell, then run npm run admin:create. Use a strong unique password and remove the variables after setup.
-7. Start the site with npm run dev.
+6. Import the supplied public logo, matching product photos, and public contact links with npm run db:import-reference-assets. This does not change product prices.
+7. Set INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD in the shell, then run npm run admin:create. Use a strong unique password and remove the variables after setup.
+8. Start the site with npm run dev.
 
-The initial owner is the only account with price-edit permission. Product content managers can edit copy and images but cannot edit prices. Price changes have a separate owner-only server route and an immutable audit/history entry.
+Customers can create an account or order as guests. Orders placed while signed in appear in that customer's account. Admin accounts are private and have no public sign-up. The initial owner is the only account with price-edit permission. Product content managers can edit copy and images but cannot edit prices. Price changes have a separate owner-only server route and an immutable audit/history entry.
 
 ## Production configuration
 
@@ -45,7 +46,7 @@ OWNER is the only role that can create/change product prices. This is enforced i
 
 ## Verification
 
-Run `npm run typecheck`, `npm run lint`, and `npm test` for the local checks. For the Playwright smoke tests, start `npm run dev` in one terminal and then run `npm run test:e2e` in another. Those browser checks cover the admin sign-in screen at desktop and narrow mobile widths; checkout still needs database-backed integration coverage against a configured PostgreSQL instance.
+Run `npm run typecheck`, `npm run lint`, and `npm test` for the local checks. For the Playwright smoke tests, start `npm run dev` in one terminal and then run `npm run test:e2e` in another. Those browser checks cover customer sign-in/sign-up links and forms plus the private admin sign-in screen at desktop and mobile widths; checkout still needs database-backed integration coverage against a configured PostgreSQL instance.
 
 Do not treat the app as ready for live sales until product photos and business policies are configured, delivery/COD settings are confirmed, external alerts are wired if required, and a real order flow is verified against the deployment database.
 

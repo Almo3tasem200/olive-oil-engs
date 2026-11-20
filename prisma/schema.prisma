@@ -56,21 +56,21 @@ enum NotificationStatus {
 }
 
 model AdminUser {
-  id                String                  @id @default(uuid()) @db.Uuid
-  email             String                  @unique @db.VarChar(254)
-  name              String                  @db.VarChar(120)
-  passwordHash      String                  @db.VarChar(255)
-  role              AdminRole               @default(FULFILLMENT)
-  isActive          Boolean                 @default(true)
-  createdAt         DateTime                @default(now()) @db.Timestamptz(3)
-  updatedAt         DateTime                @updatedAt @db.Timestamptz(3)
-  sessions          AdminSession[]
-  statusChanges     OrderStatusHistory[]
-  orderNotes        OrderNote[]
-  auditLogs         AuditLog[]
-  updatedProducts   Product[]               @relation("ProductUpdatedBy")
-  changedPrices     ProductPriceHistory[]
-  storeSettings     StoreSettings[]         @relation("SettingsUpdatedBy")
+  id              String                @id @default(uuid()) @db.Uuid
+  email           String                @unique @db.VarChar(254)
+  name            String                @db.VarChar(120)
+  passwordHash    String                @db.VarChar(255)
+  role            AdminRole             @default(FULFILLMENT)
+  isActive        Boolean               @default(true)
+  createdAt       DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt       DateTime              @updatedAt @db.Timestamptz(3)
+  sessions        AdminSession[]
+  statusChanges   OrderStatusHistory[]
+  orderNotes      OrderNote[]
+  auditLogs       AuditLog[]
+  updatedProducts Product[]             @relation("ProductUpdatedBy")
+  changedPrices   ProductPriceHistory[]
+  storeSettings   StoreSettings[]       @relation("SettingsUpdatedBy")
 }
 
 model AdminSession {
@@ -85,29 +85,53 @@ model AdminSession {
   @@index([adminUserId, expiresAt])
 }
 
+model CustomerAccount {
+  id           String            @id @default(uuid()) @db.Uuid
+  email        String            @unique @db.VarChar(254)
+  name         String            @db.VarChar(120)
+  passwordHash String            @db.VarChar(255)
+  isActive     Boolean           @default(true)
+  createdAt    DateTime          @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime          @updatedAt @db.Timestamptz(3)
+  sessions     CustomerSession[]
+  orders       Order[]
+}
+
+model CustomerSession {
+  id         String          @id @default(uuid()) @db.Uuid
+  customerId String          @db.Uuid
+  tokenHash  String          @unique @db.Char(64)
+  expiresAt  DateTime        @db.Timestamptz(3)
+  revokedAt  DateTime?       @db.Timestamptz(3)
+  createdAt  DateTime        @default(now()) @db.Timestamptz(3)
+  customer   CustomerAccount @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, expiresAt])
+}
+
 model Product {
-  id                String              @id @default(uuid()) @db.Uuid
-  sku               String              @unique @db.VarChar(80)
-  slug              String              @unique @db.VarChar(120)
-  nameAr            String              @db.VarChar(160)
-  nameEn            String              @db.VarChar(160)
-  shortDescriptionAr String?             @db.VarChar(300)
-  shortDescriptionEn String?             @db.VarChar(300)
-  descriptionAr     String?             @db.Text
-  descriptionEn     String?             @db.Text
-  volumeMl          Int
-  packaging         PackagingType
-  pricePiasters     Int
-  isActive          Boolean             @default(false)
-  isAvailable       Boolean             @default(true)
-  isFeatured        Boolean             @default(false)
-  updatedById       String?             @db.Uuid
-  createdAt         DateTime            @default(now()) @db.Timestamptz(3)
-  updatedAt         DateTime            @updatedAt @db.Timestamptz(3)
-  updatedBy         AdminUser?          @relation("ProductUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
-  images            ProductImage[]
-  orderItems        OrderItem[]
-  priceHistory      ProductPriceHistory[]
+  id                 String                @id @default(uuid()) @db.Uuid
+  sku                String                @unique @db.VarChar(80)
+  slug               String                @unique @db.VarChar(120)
+  nameAr             String                @db.VarChar(160)
+  nameEn             String                @db.VarChar(160)
+  shortDescriptionAr String?               @db.VarChar(300)
+  shortDescriptionEn String?               @db.VarChar(300)
+  descriptionAr      String?               @db.Text
+  descriptionEn      String?               @db.Text
+  volumeMl           Int
+  packaging          PackagingType
+  pricePiasters      Int
+  isActive           Boolean               @default(false)
+  isAvailable        Boolean               @default(true)
+  isFeatured         Boolean               @default(false)
+  updatedById        String?               @db.Uuid
+  createdAt          DateTime              @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime              @updatedAt @db.Timestamptz(3)
+  updatedBy          AdminUser?            @relation("ProductUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  images             ProductImage[]
+  orderItems         OrderItem[]
+  priceHistory       ProductPriceHistory[]
 
   @@index([isActive, isAvailable, isFeatured])
   @@index([nameAr])
@@ -128,15 +152,15 @@ model ProductImage {
 }
 
 model ProductPriceHistory {
-  id                 String    @id @default(uuid()) @db.Uuid
-  productId          String    @db.Uuid
-  changedById        String    @db.Uuid
-  oldPricePiasters   Int
-  newPricePiasters   Int
-  reason             String?   @db.VarChar(300)
-  createdAt          DateTime  @default(now()) @db.Timestamptz(3)
-  product            Product   @relation(fields: [productId], references: [id], onDelete: Restrict)
-  changedBy          AdminUser @relation(fields: [changedById], references: [id], onDelete: Restrict)
+  id               String    @id @default(uuid()) @db.Uuid
+  productId        String    @db.Uuid
+  changedById      String    @db.Uuid
+  oldPricePiasters Int
+  newPricePiasters Int
+  reason           String?   @db.VarChar(300)
+  createdAt        DateTime  @default(now()) @db.Timestamptz(3)
+  product          Product   @relation(fields: [productId], references: [id], onDelete: Restrict)
+  changedBy        AdminUser @relation(fields: [changedById], references: [id], onDelete: Restrict)
 
   @@index([productId, createdAt])
 }
@@ -161,40 +185,41 @@ model DeliveryZone {
 }
 
 model StoreSettings {
-  id                    Int       @id @default(1)
-  businessNameAr        String    @default("زيت زيتون المهندسين") @db.VarChar(160)
-  businessNameEn        String    @default("El Mohandeseen Olive Oil") @db.VarChar(160)
-  logoObjectKey         String?   @db.VarChar(500)
-  phone                 String?   @db.VarChar(32)
-  whatsapp              String?   @db.VarChar(32)
-  facebookUrl           String?   @db.VarChar(500)
-  instagramUrl          String?   @db.VarChar(500)
-  publicAddressAr       String?   @db.VarChar(500)
-  publicAddressEn       String?   @db.VarChar(500)
-  hoursAr               String?   @db.VarChar(500)
-  hoursEn               String?   @db.VarChar(500)
-  deliveryPolicyAr      String?   @db.Text
-  deliveryPolicyEn      String?   @db.Text
-  privacyPolicyAr       String?   @db.Text
-  privacyPolicyEn       String?   @db.Text
-  termsAr               String?   @db.Text
-  termsEn               String?   @db.Text
-  codEnabled            Boolean   @default(false)
-  updatedById           String?   @db.Uuid
-  updatedAt             DateTime  @updatedAt @db.Timestamptz(3)
-  updatedBy             AdminUser? @relation("SettingsUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
+  id               Int        @id @default(1)
+  businessNameAr   String     @default("زيت زيتون المهندسين") @db.VarChar(160)
+  businessNameEn   String     @default("El Mohandeseen Olive Oil") @db.VarChar(160)
+  logoObjectKey    String?    @db.VarChar(500)
+  phone            String?    @db.VarChar(32)
+  whatsapp         String?    @db.VarChar(32)
+  facebookUrl      String?    @db.VarChar(500)
+  instagramUrl     String?    @db.VarChar(500)
+  publicAddressAr  String?    @db.VarChar(500)
+  publicAddressEn  String?    @db.VarChar(500)
+  hoursAr          String?    @db.VarChar(500)
+  hoursEn          String?    @db.VarChar(500)
+  deliveryPolicyAr String?    @db.Text
+  deliveryPolicyEn String?    @db.Text
+  privacyPolicyAr  String?    @db.Text
+  privacyPolicyEn  String?    @db.Text
+  termsAr          String?    @db.Text
+  termsEn          String?    @db.Text
+  codEnabled       Boolean    @default(false)
+  updatedById      String?    @db.Uuid
+  updatedAt        DateTime   @updatedAt @db.Timestamptz(3)
+  updatedBy        AdminUser? @relation("SettingsUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)
 }
 
 model Order {
   id                          String               @id @default(uuid()) @db.Uuid
   orderNumber                 String               @unique @db.VarChar(40)
   idempotencyKey              String               @unique @db.VarChar(100)
-  idempotencyFingerprint       String               @db.Char(64)
+  idempotencyFingerprint      String               @db.Char(64)
   confirmationTokenHash       String               @unique @db.Char(64)
   confirmationTokenCiphertext String               @db.VarChar(300)
   confirmationExpiresAt       DateTime             @db.Timestamptz(3)
   customerName                String               @db.VarChar(160)
   customerPhone               String               @db.VarChar(32)
+  customerAccountId           String?              @db.Uuid
   contactPreference           ContactPreference?
   governorate                 String               @db.VarChar(120)
   city                        String               @db.VarChar(120)
@@ -217,6 +242,7 @@ model Order {
   createdAt                   DateTime             @default(now()) @db.Timestamptz(3)
   updatedAt                   DateTime             @updatedAt @db.Timestamptz(3)
   deliveryZone                DeliveryZone?        @relation(fields: [deliveryZoneId], references: [id], onDelete: SetNull)
+  customerAccount             CustomerAccount?     @relation(fields: [customerAccountId], references: [id], onDelete: SetNull)
   items                       OrderItem[]
   statusHistory               OrderStatusHistory[]
   notes                       OrderNote[]
@@ -224,24 +250,25 @@ model Order {
 
   @@index([createdAt, status])
   @@index([customerPhone])
+  @@index([customerAccountId, createdAt])
   @@index([customerName])
   @@index([status, createdAt])
 }
 
 model OrderItem {
-  id                 String   @id @default(uuid()) @db.Uuid
-  orderId            String   @db.Uuid
-  productId          String?  @db.Uuid
-  skuSnapshot        String   @db.VarChar(80)
-  nameArSnapshot     String   @db.VarChar(160)
-  nameEnSnapshot     String   @db.VarChar(160)
-  volumeMlSnapshot   Int
-  packagingSnapshot  PackagingType
-  unitPricePiasters  Int
-  quantity           Int
-  lineTotalPiasters  Int
-  order              Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product            Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+  id                String        @id @default(uuid()) @db.Uuid
+  orderId           String        @db.Uuid
+  productId         String?       @db.Uuid
+  skuSnapshot       String        @db.VarChar(80)
+  nameArSnapshot    String        @db.VarChar(160)
+  nameEnSnapshot    String        @db.VarChar(160)
+  volumeMlSnapshot  Int
+  packagingSnapshot PackagingType
+  unitPricePiasters Int
+  quantity          Int
+  lineTotalPiasters Int
+  order             Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product           Product?      @relation(fields: [productId], references: [id], onDelete: SetNull)
 
   @@index([orderId])
 }
@@ -291,16 +318,16 @@ model Notification {
 }
 
 model AuditLog {
-  id             String    @id @default(uuid()) @db.Uuid
-  adminUserId    String?   @db.Uuid
-  action         String    @db.VarChar(100)
-  entityType     String    @db.VarChar(100)
-  entityId       String    @db.VarChar(100)
-  beforeJson     String?   @db.Text
-  afterJson      String?   @db.Text
-  requestId      String?   @db.VarChar(100)
-  createdAt      DateTime  @default(now()) @db.Timestamptz(3)
-  adminUser      AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
+  id          String     @id @default(uuid()) @db.Uuid
+  adminUserId String?    @db.Uuid
+  action      String     @db.VarChar(100)
+  entityType  String     @db.VarChar(100)
+  entityId    String     @db.VarChar(100)
+  beforeJson  String?    @db.Text
+  afterJson   String?    @db.Text
+  requestId   String?    @db.VarChar(100)
+  createdAt   DateTime   @default(now()) @db.Timestamptz(3)
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id], onDelete: SetNull)
 
   @@index([entityType, entityId, createdAt])
   @@index([adminUserId, createdAt])
@@ -311,7 +338,7 @@ model RateLimitBucket {
   bucketKey   String   @db.Char(64)
   windowStart DateTime @db.Timestamptz(0)
   count       Int      @default(0)
+
   @@unique([bucketKey, windowStart])
   @@index([windowStart])
 }
-

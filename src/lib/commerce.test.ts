@@ -8,7 +8,7 @@ import {
 import { normalizeEgyptianPhone } from '@/lib/phone';
 import { canEditPrices, canManageProducts } from '@/lib/permissions';
 import { validStatusTransition } from '@/lib/order-rules';
-import { priceUpdateSchema, productContentSchema } from '@/lib/validation';
+import { customerRegistrationSchema, priceUpdateSchema, productContentSchema } from '@/lib/validation';
 
 describe('money calculations', () => {
   it('parses exact EGP values into integer piastres', () => {
@@ -76,6 +76,14 @@ describe('authorization and order status rules', () => {
     expect(validStatusTransition('PROCESSING', 'SHIPPED')).toBe(true);
     expect(validStatusTransition('NEW', 'DELIVERED')).toBe(false);
     expect(validStatusTransition('DELIVERED', 'CANCELLED')).toBe(false);
+  });
+});
+
+describe('customer registration validation', () => {
+  it('requires a valid email, a name, and a 12-character password', () => {
+    expect(customerRegistrationSchema.safeParse({ name: 'Mona Ali', email: 'mona@example.com', password: 'long-password-123' }).success).toBe(true);
+    expect(customerRegistrationSchema.safeParse({ name: 'Mona Ali', email: 'not-an-email', password: 'long-password-123' }).success).toBe(false);
+    expect(customerRegistrationSchema.safeParse({ name: 'Mona Ali', email: 'mona@example.com', password: 'short' }).success).toBe(false);
   });
 });
 

@@ -11,7 +11,7 @@ This refines the Phase 1 PRD into a navigation model, interaction flows, respons
 | Topic | Decision | Rationale |
 |---|---|---|
 | Catalog | Each size/package is an independently managed SKU. | The 500 ml, 1 L, and 12 L items have separate prices and availability. |
-| Guest ordering | Store contact/address details as immutable order snapshots; no separate customer directory in MVP. | No account is required; shared phone numbers must not merge different people. |
+| Customer accounts | Optional registration/sign-in with a separate session from admin access; link only orders placed while signed in. | The owner requested visible sign-in/sign-up. Guest checkout remains available; guest orders are not matched by email or phone. |
 | Money | Store integer piastres; compute price, delivery, and total on the server at quote and submission. | Avoid rounding errors, browser price manipulation, and changed historical orders. |
 | Delivery | Enabled admin delivery zones define coverage and fees. | Current policy is unknown. Historical free delivery is not published by default. |
 | Payment | COD only, behind an admin toggle. No online gateway. | Matches the brief without implying a provider is active. |
@@ -30,6 +30,10 @@ flowchart TD
   HOME --> FAQ[FAQ /faq]
   HOME --> DELIVERY[Delivery /delivery]
   HOME --> CONTACT[Contact /contact]
+  HOME --> CUSTLOGIN[Customer sign-in /account/login]
+  HOME --> CUSTSIGNUP[Customer sign-up /account/signup]
+  CUSTLOGIN --> ACCOUNT[Customer account /account]
+  CUSTSIGNUP --> ACCOUNT
   LIST --> DETAIL[Product detail /products/:slug]
   DETAIL --> CART[Cart /cart]
   DETAIL --> CHECKOUT[Checkout /checkout]
@@ -144,22 +148,26 @@ The brief suggests olive green, gold, cream, and white. Since logo and packaging
 |---|---|
 | AdminUser | UUID, unique email, name, password hash, role (OWNER/MANAGER/FULFILLMENT), active and timestamps. Private owner setup; no public signup. |
 | AdminSession | Admin FK, unique token hash, expiry/revocation timestamps. Raw session token is never stored. |
+| CustomerAccount | Optional customer identity with unique email, name, Argon2id password hash, active flag, and timestamps. Separate from staff accounts. |
+| CustomerSession | Customer FK, unique token hash, expiry/revocation timestamps. Raw session token is never stored. |
 | Product | UUID, unique SKU/slug, Arabic/English names/descriptions, capacity/unit, plastic package type, integer piastre price, active/available and timestamps. |
 | ProductImage | Product FK, storage key, localized alt text, sort order, primary flag. Image bytes live in object storage. |
 | DeliveryZone | Arabic/English governorate/city/area, normalized code, fee in piastres, optional free threshold, active flag. |
 | StoreSettings | Singleton with bilingual business name, logo key, public phone/WhatsApp, social URLs, address/hours/delivery text, COD toggle, EGP and timestamps. No secrets. |
-| Order | Unique reference/idempotency key/confirmation-token hash, customer/contact/address snapshots, optional zone FK and zone/fee snapshot, subtotal/discount/delivery/total in piastres, payment/order status and timestamps. |
+| Order | Unique reference/idempotency key/confirmation-token hash, optional customer-account FK plus contact/address snapshots, optional zone FK and zone/fee snapshot, subtotal/discount/delivery/total in piastres, payment/order status and timestamps. |
 | OrderItem | Order FK, nullable product FK, SKU/name/capacity/package/price snapshots, positive quantity and line total. |
 | OrderStatusHistory | Order FK, old/new status, optional admin actor, reason/note, timestamp; append-only. |
 | OrderNote | Order/admin FKs, internal note/time; append-only and never customer-visible. |
 | Notification | Optional order FK, channel/type/status, attempts, next-attempt time, redacted error/provider reference. |
 | AuditLog | Admin actor, action/entity, redacted before/after values, time, request correlation ID. Never log secrets or tokens. |
 
-No Customer table in MVP: guest details live on the order, avoiding a separate directory and uncertain identity matching. Add customer accounts only if separately approved. Discounts are zero and unavailable in MVP. Inventory quantities require atomic reservation, expiry, and restock policy; a stock field alone cannot prevent overselling.
+Guest details remain immutable order snapshots. Account orders are linked only when the customer is signed in at checkout; guest orders are not automatically matched by email or phone. Account APIs expose only that customer's order number, status, amount, and date. Discounts are zero and unavailable in MVP. Inventory quantities require atomic reservation, expiry, and restock policy; a stock field alone cannot prevent overselling.
 
 ~~~mermaid
 erDiagram
   ADMIN_USER ||--o{ ADMIN_SESSION : owns
+  CUSTOMER_ACCOUNT ||--o{ CUSTOMER_SESSION : owns
+  CUSTOMER_ACCOUNT o|--o{ ORDER : places_while_signed_in
   ADMIN_USER ||--o{ ORDER_STATUS_HISTORY : changes
   ADMIN_USER ||--o{ ORDER_NOTE : writes
   ADMIN_USER ||--o{ AUDIT_LOG : performs
@@ -198,7 +206,7 @@ If stock tracking is later enabled, reserve stock atomically and define expiry/r
 
 - Web: Next.js App Router, React, TypeScript, Tailwind CSS.
 - Backend: one server-rendered app for store/admin; no separate NestJS service for MVP. The domain is compact, so one deployable app lowers operational burden.
-- Database: PostgreSQL with Prisma ORM and versioned migrations.
+- Database: PostgreSQL with Prisma ORM and versioned migrations. Optional customer account sessions are separate from staff sessions.
 - Use Server Components for suitable reads; Client Components only for cart controls, form state, and browser storage.
 - A server-only data access layer and domain services own auth, pricing, quotes, orders, delivery, notifications, and reporting. Pages contain no pricing rules or broad direct database access.
 - Route Handlers serve quote/order and admin API operations. Server Actions may handle same-origin forms, but each is treated as a reachable endpoint and validates input/authorization.

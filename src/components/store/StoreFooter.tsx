@@ -40,6 +40,9 @@ export function StoreFooter({ settings, locale = 'ar' }: { settings?: FooterSett
           {(english ? settings?.termsEn : settings?.termsAr) && (
             <Link href={english ? '/en/terms' : '/terms'}>{english ? 'Terms' : 'الشروط'}</Link>
           )}
+          <Link href='/admin/login' className='basis-full pt-2 text-white/70'>
+            {english ? 'Store administrator sign-in' : 'دخول إدارة المتجر'}
+          </Link>
         </div>
       </div>
       <div className='container-shell mt-8 border-t border-white/20 pt-4 text-xs text-white/65'>

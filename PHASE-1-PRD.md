@@ -52,7 +52,7 @@ Availability, stock counts, detailed product copy, product origin/grade, and ima
 
 ### Out of scope for initial release
 
-- Customer accounts, loyalty points, subscriptions, recurring orders, and personalized marketing.
+- Loyalty points, subscriptions, recurring orders, and personalized marketing. Optional basic customer accounts are supported; guest checkout remains available.
 - Online card/wallet payments until provider credentials and explicit activation approval exist.
 - Multi-vendor, multi-currency, international shipping, and automated courier integrations.
 - Product reviews/testimonials until genuine, permissioned submissions are available.
@@ -90,6 +90,7 @@ Availability, stock counts, detailed product copy, product origin/grade, and ima
 - **FR-20:** Allow delivery zones/areas, fees, availability, free delivery, and optional minimum order amount to be configured. No zone should be promised until its details are entered and approved.
 - **FR-21:** Allow business settings such as display name, logo, phone/WhatsApp, social URLs, address, hours, and delivery policy to be edited. Never display missing settings as fabricated values.
 - **FR-22:** Record sensitive admin actions, including product-price and delivery-rule changes, in an audit log.
+- **FR-23:** Let customers optionally register and sign in with a password-protected account. Orders placed while signed in may be listed in that account; guest orders continue to use their private confirmation link. Customer accounts must not grant access to other customers' orders or admin functions.
 
 ## 5. Non-functional requirements
 
@@ -176,12 +177,14 @@ The initial model treats each capacity/package combination as a sellable **Produ
 | Entity | Purpose and key fields |
 |---|---|
 | **AdminUser** | Admin identity, password hash, role, active flag, timestamps. No public self-registration. |
+| **CustomerAccount** | Optional customer identity with unique email, name, Argon2id password hash, active flag, and timestamps. Separate from staff accounts. |
+| **CustomerSession** | Customer FK, unique token hash, expiry/revocation timestamps. Raw session token is never stored. |
 | **Customer** | Guest contact record created at checkout: name, normalized phone, optional email. Avoid cross-customer deduplication based only on phone. |
 | **Product** | SKU, slug, Arabic/English name and description, volume/unit, packaging, current price in piastres, active/available flags, optional inventory setting, timestamps. |
 | **ProductImage** | Product FK, storage key, localized alt text, sort order, primary-image flag. |
 | **DeliveryZone** | City/governorate and area, enabled flag, fee, optional free-delivery threshold/constraints, timestamps. Rules need owner confirmation. |
 | **StoreSettings** | Singleton/configuration for display identity, contact/social details, currency (initially EGP), COD toggle, hours, and delivery policy. Secrets remain in environment/secret storage. |
-| **Order** | Unique order number and idempotency key; customer FK plus immutable name/phone/address snapshot; zone FK plus zone/fee snapshot; subtotal, discount, delivery, total; payment method/status; order status; notes; timestamps. |
+| **Order** | Unique order number and idempotency key; optional customer-account FK plus immutable name/phone/address snapshot; zone FK plus zone/fee snapshot; subtotal, discount, delivery, total; payment method/status; order status; notes; timestamps. |
 | **OrderItem** | Order FK, optional Product FK, SKU/name/capacity/packaging/price snapshots, quantity, line total. Historical rows remain valid if product changes. |
 | **OrderStatusHistory** | Order FK, previous/new status, timestamp, optional AdminUser actor, note/reason. |
 | **Notification** | Order FK, channel/type, queued/sent/failed status, attempt count, next-attempt time, redacted error/provider reference, timestamps; supports dashboard inbox and external outbox. |
@@ -235,7 +238,7 @@ Order creation should be one database transaction: validate products and deliver
 - **Web/app:** Next.js App Router, React, TypeScript, Tailwind CSS, reusable accessible RTL-aware components.
 - **Server:** Next.js Route Handlers/server-side application services for catalog quotes, checkout, and admin operations. Keep pricing/order rules in server domain services, not client components.
 - **Database:** Managed PostgreSQL with Prisma ORM and checked-in migrations. PostgreSQL is the source of truth for products, orders, delivery settings, admin access, and notification state.
-- **Authentication:** Private admin accounts, role checks, strong password hashing, secure cookie-backed sessions, rate limiting, and audited mutations. No customer account requirement.
+- **Authentication:** Private admin accounts, role checks, strong password hashing, secure cookie-backed sessions, rate limiting, and audited mutations. Optional customer sessions are separate from admin sessions and can access only the customer's own signed-in orders.
 - **Images:** Object storage/CDN for approved original logo/product images; database stores object key and metadata. Validate uploads and keep image delivery optimized.
 - **Notifications:** Transactional outbox/notification rows; dashboard inbox is the baseline. A worker/scheduled process sends configured external notifications and retries failures without blocking checkout.
 - **Hosting:** One Next.js application, managed PostgreSQL, object storage, and a scheduled worker/job. Select exact vendors and region in Phase 2 after account, budget, privacy, and deployment constraints are known.

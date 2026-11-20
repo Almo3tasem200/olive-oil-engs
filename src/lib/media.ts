@@ -34,6 +34,10 @@ function s3Client() {
 }
 
 export function publicMediaUrl(objectKey: string) {
+  if (objectKey.startsWith('reference/')) {
+    return '/reference-assets/' + objectKey.slice('reference/'.length).split('/').map(encodeURIComponent).join('/');
+  }
+
   if (process.env.MEDIA_DRIVER !== 's3') {
     return '/uploads/' + objectKey.split('/').map(encodeURIComponent).join('/');
   }
@@ -108,6 +112,8 @@ export function storeBrandLogo(input: Buffer) {
 }
 
 export async function deleteMediaObject(objectKey: string) {
+  if (objectKey.startsWith('reference/')) return;
+
   if (process.env.MEDIA_DRIVER === 's3') {
     await s3Client().send(new DeleteObjectCommand({
       Bucket: process.env.S3_BUCKET,

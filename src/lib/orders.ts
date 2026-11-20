@@ -124,12 +124,13 @@ export async function quoteCart(input: QuoteInput) {
   return loadCartQuote(prisma, input.items, input.deliveryZoneId);
 }
 
-export async function createOrder(input: CheckoutInput) {
+export async function createOrder(input: CheckoutInput, customerAccountId?: string) {
   const normalizedPhone = normalizeEgyptianPhone(input.phone);
   if (!normalizedPhone) throw new CommerceError('INVALID_PHONE', 'Enter a valid Egyptian mobile number.');
 
   const fingerprint = sha256(JSON.stringify({
     ...input,
+    ...(customerAccountId ? { customerAccountId } : {}),
     phone: normalizedPhone,
     items: [...input.items].sort((a, b) => a.productId.localeCompare(b.productId)),
   }));
@@ -202,6 +203,7 @@ export async function createOrder(input: CheckoutInput) {
           confirmationExpiresAt: expiresAt,
           customerName: input.customerName,
           customerPhone: normalizedPhone,
+          customerAccountId: customerAccountId ?? null,
           contactPreference: input.contactPreference,
           governorate: input.governorate,
           city: input.city,

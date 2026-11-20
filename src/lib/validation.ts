@@ -9,6 +9,12 @@ export const loginSchema = z.object({
   password: z.string().min(1).max(200),
 }).strict();
 
+export const customerRegistrationSchema = z.object({
+  name: z.string().trim().min(2).max(120),
+  email: z.string().trim().email().max(254),
+  password: z.string().min(12).max(200),
+}).strict();
+
 export const checkoutSchema = z.object({
   items: z.array(z.object({
     productId: z.string().uuid(),
