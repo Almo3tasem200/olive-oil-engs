@@ -6,8 +6,6 @@ type Settings = {
   whatsapp?: string | null;
   facebookUrl?: string | null;
   instagramUrl?: string | null;
-  deliveryPolicyAr?: string | null;
-  deliveryPolicyEn?: string | null;
   privacyPolicyAr?: string | null;
   privacyPolicyEn?: string | null;
   termsAr?: string | null;
@@ -20,11 +18,11 @@ export function StorePageShell({
   settings,
 }: Readonly<{ children: React.ReactNode; locale?: 'ar' | 'en'; settings?: Settings | null }>) {
   return (
-    <>
+    <div lang={locale === 'en' ? 'en' : 'ar-EG'} dir={locale === 'en' ? 'ltr' : 'rtl'}>
       <StoreHeader locale={locale} />
       <main>{children}</main>
       <StoreFooter settings={settings} locale={locale} />
-    </>
+    </div>
   );
 }
 

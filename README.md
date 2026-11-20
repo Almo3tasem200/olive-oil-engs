@@ -8,6 +8,20 @@ Initial catalog prices are stored in the database seed, not in the storefront: 5
 
 Delivery zones and COD start disabled/unconfigured. Configure these in Admin after the business owner confirms the live policy. A direct WhatsApp contact link can be shown; no messaging API, email service, or payment provider is configured by default.
 
+## Store pages
+
+The Arabic storefront is the default language; English pages use the `/en` prefix. Each page has one purpose:
+
+- Home (`/`): short introduction, olive oil information, and featured products.
+- Products (`/products`) and product details (`/products/:slug`): the complete catalog and an individual item's information.
+- How to order (`/how-to-order`): the ordering steps.
+- Delivery (`/delivery`): published areas, fees, and delivery policy.
+- FAQ (`/faq`): account, order, delivery, and payment answers.
+- About (`/about`): store information and configured contact options.
+- Cart, checkout, customer account, privacy, and terms have their own pages as needed.
+
+The header links to the main shopping and help pages, and the footer groups store information, contact methods, and configured policies. English pages mirror the same structure under `/en`.
+
 ## Requirements
 
 - Node.js 24 or another supported current LTS

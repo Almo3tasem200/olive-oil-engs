@@ -16,12 +16,15 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
   const pathname = usePathname();
   const english = locale === 'en';
   const prefix = english ? '/en' : '';
+  const languageHref = english
+    ? (pathname.replace(/^\/en(?=\/|$)/, '') || '/')
+    : (pathname === '/' ? '/en' : '/en' + pathname);
   const signInLabel = english ? 'Sign in' : 'تسجيل الدخول';
   const signUpLabel = english ? 'Sign up' : 'إنشاء حساب';
   const accountLabel = english ? 'My account' : 'حسابي';
   const label = english
-    ? { home: 'Home', products: 'Products', order: 'How to order', language: 'العربية', cart: 'Cart' }
-    : { home: 'الرئيسية', products: 'المنتجات', order: 'طريقة الطلب', language: 'English', cart: 'السلة' };
+    ? { home: 'Home', products: 'Products', order: 'How to order', delivery: 'Delivery', faq: 'FAQ', about: 'About', language: 'العربية', cart: 'Cart' }
+    : { home: 'الرئيسية', products: 'المنتجات', order: 'طريقة الطلب', delivery: 'التوصيل', faq: 'الأسئلة الشائعة', about: 'عن المتجر', language: 'English', cart: 'السلة' };
 
   useEffect(() => {
     fetch('/api/storefront/settings', { cache: 'no-store' })
@@ -49,29 +52,31 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
             <span className='hidden text-xs text-[var(--muted)] sm:block'>{english ? 'El Mohandeseen Olive Oil' : 'El Mohandeseen Olive Oil'}</span>
           </span>
         </Link>
-        <nav className='hidden items-center gap-6 text-sm font-semibold md:flex' aria-label={english ? 'Main navigation' : 'التنقل الرئيسي'}>
+        <nav className='hidden items-center gap-4 text-xs font-semibold xl:flex' aria-label={english ? 'Main navigation' : 'التنقل الرئيسي'}>
           <Link href={prefix || '/'}>{label.home}</Link>
           <Link href={prefix + '/products'}>{label.products}</Link>
-          <a href={prefix + '/#how-to-order'}>{label.order}</a>
+          <Link href={prefix + '/how-to-order'}>{label.order}</Link>
+          <Link href={prefix + '/delivery'}>{label.delivery}</Link>
+          <Link href={prefix + '/faq'}>{label.faq}</Link>
         </nav>
         <div className='flex items-center gap-2'>
-          <Link href={english ? '/' : '/en'} aria-label={label.language} className='rounded-lg px-2 py-2 text-sm font-semibold hover:bg-white'>
+          <Link href={languageHref} aria-label={label.language} className='rounded-lg px-2 py-2 text-sm font-semibold hover:bg-white'>
             <span className='hidden sm:inline'>{label.language}</span>
             <span className='sm:hidden'>{english ? 'AR' : 'EN'}</span>
           </Link>
-          <ThemeToggle locale={locale} className='hidden md:grid' />
+          <ThemeToggle locale={locale} className='hidden xl:grid' />
           {signedIn ? (
-            <Link href={prefix + '/account'} className='inline-flex min-h-11 items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3 text-sm font-bold' aria-label={accountLabel}>
+            <Link href={prefix + '/account'} className='hidden min-h-11 items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3 text-sm font-bold xl:inline-flex' aria-label={accountLabel}>
               <UserRound size={18} aria-hidden='true' />
               <span className='hidden sm:inline'>{accountLabel}</span>
             </Link>
           ) : (
             <>
-              <Link href={prefix + '/account/login'} className='inline-flex min-h-11 items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3 text-sm font-bold' aria-label={signInLabel}>
+              <Link href={prefix + '/account/login'} className='hidden min-h-11 items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3 text-sm font-bold xl:inline-flex' aria-label={signInLabel}>
                 <UserRound size={18} aria-hidden='true' />
                 <span className='hidden sm:inline'>{signInLabel}</span>
               </Link>
-              <Link href={prefix + '/account/signup'} className='hidden min-h-11 items-center rounded-xl bg-[var(--button-primary-bg)] px-3 text-sm font-bold text-on-primary hover:bg-[var(--button-primary-hover)] md:inline-flex'>
+              <Link href={prefix + '/account/signup'} className='hidden min-h-11 items-center rounded-xl bg-[var(--button-primary-bg)] px-3 text-sm font-bold text-on-primary hover:bg-[var(--button-primary-hover)] xl:inline-flex'>
                 {signUpLabel}
               </Link>
             </>
@@ -83,7 +88,7 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
           </Link>
           <button
             type='button'
-            className='grid size-11 place-items-center rounded-xl border border-[var(--line)] bg-white md:hidden'
+            className='grid size-11 place-items-center rounded-xl border border-[var(--line)] bg-white xl:hidden'
             aria-expanded={menuOpen}
             aria-label={menuOpen ? (english ? 'Close menu' : 'إغلاق القائمة') : (english ? 'Open menu' : 'فتح القائمة')}
             onClick={() => setMenuOpen((open) => !open)}
@@ -92,7 +97,7 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
           </button>
         </div>
       </div>
-      <div className='container-shell flex min-h-11 items-center justify-center gap-3 border-t border-[var(--line)] text-sm font-semibold md:hidden'>
+      <div className='container-shell flex min-h-11 items-center justify-center gap-3 border-t border-[var(--line)] text-sm font-semibold xl:hidden'>
         {signedIn ? (
           <Link href={prefix + '/account'} className='inline-flex min-h-11 items-center px-3'>{accountLabel}</Link>
         ) : (
@@ -102,13 +107,16 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
             <Link href={prefix + '/account/signup'} className='inline-flex min-h-11 items-center px-3'>{signUpLabel}</Link>
           </>
         )}
-        <ThemeToggle locale={locale} className='md:hidden' />
+        <ThemeToggle locale={locale} className='xl:hidden' />
       </div>
       {menuOpen && (
-        <nav className='container-shell grid gap-1 border-t border-[var(--line)] py-3 md:hidden' aria-label={english ? 'Mobile navigation' : 'التنقل'}>
+        <nav className='container-shell grid gap-1 border-t border-[var(--line)] py-3 xl:hidden' aria-label={english ? 'Store navigation' : 'التنقل'}>
           <Link className='rounded-lg px-3 py-2 font-semibold hover:bg-white' href={prefix || '/'} onClick={() => setMenuOpen(false)}>{label.home}</Link>
           <Link className='rounded-lg px-3 py-2 font-semibold hover:bg-white' href={prefix + '/products'} onClick={() => setMenuOpen(false)}>{label.products}</Link>
-          <a className='rounded-lg px-3 py-2 font-semibold hover:bg-white' href={prefix + '/#how-to-order'} onClick={() => setMenuOpen(false)}>{label.order}</a>
+          <Link className='rounded-lg px-3 py-2 font-semibold hover:bg-white' href={prefix + '/how-to-order'} onClick={() => setMenuOpen(false)}>{label.order}</Link>
+          <Link className='rounded-lg px-3 py-2 font-semibold hover:bg-white' href={prefix + '/delivery'} onClick={() => setMenuOpen(false)}>{label.delivery}</Link>
+          <Link className='rounded-lg px-3 py-2 font-semibold hover:bg-white' href={prefix + '/faq'} onClick={() => setMenuOpen(false)}>{label.faq}</Link>
+          <Link className='rounded-lg px-3 py-2 font-semibold hover:bg-white' href={prefix + '/about'} onClick={() => setMenuOpen(false)}>{label.about}</Link>
           {signedIn ? (
             <Link className='rounded-lg px-3 py-2 font-semibold hover:bg-white' href={prefix + '/account'} onClick={() => setMenuOpen(false)}>{accountLabel}</Link>
           ) : (

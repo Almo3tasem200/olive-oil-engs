@@ -66,21 +66,41 @@ test('home benefits appear above the headline and the hero product photo is remo
   }
 });
 
+test('store information is organized into separate localized pages', async ({ page }) => {
+  await page.goto('/');
+  await expect(page.getByRole('heading', { name: 'طريقة الطلب' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'الأسئلة الشائعة' })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: 'طريقة الطلب' }).last()).toHaveAttribute('href', '/how-to-order');
+  await expect(page.getByRole('link', { name: 'التوصيل' }).last()).toHaveAttribute('href', '/delivery');
+  await expect(page.getByRole('link', { name: 'الأسئلة الشائعة' }).last()).toHaveAttribute('href', '/faq');
+
+  await page.goto('/how-to-order');
+  await expect(page.getByRole('heading', { name: 'طريقة الطلب' })).toBeVisible();
+  await expect(page.getByRole('listitem')).toHaveCount(4);
+
+  await page.goto('/en/faq');
+  await expect(page.getByRole('heading', { name: 'Frequently asked questions' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Do I need an account to order?' })).toBeVisible();
+  await page.getByRole('link', { name: 'العربية' }).click();
+  await expect(page).toHaveURL(/\/faq$/);
+  await expect(page.getByRole('heading', { name: 'الأسئلة الشائعة' })).toBeVisible();
+});
+
 test('dark mode toggle applies the theme and keeps the saved choice', async ({ page }) => {
   await page.goto('/en');
   await page.evaluate(() => window.localStorage.setItem('olive-oil-theme', 'light'));
   await page.reload();
   await expect.poll(() => page.getByRole('link', { name: 'Sign up' }).evaluate((link) => getComputedStyle(link).color)).toBe('rgb(255, 255, 255)');
   const browseProductsButton = page.getByRole('link', { name: 'Browse products' });
-  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).color)).toBe('rgb(38, 51, 38)');
-  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).backgroundColor)).toBe('rgb(237, 240, 231)');
+  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).color)).toBe('rgb(255, 255, 255)');
+  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).backgroundColor)).toBe('rgb(61, 81, 56)');
 
   await page.getByRole('button', { name: 'Switch to dark mode' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect.poll(() => page.locator('body').evaluate((body) => getComputedStyle(body).backgroundColor)).toBe('rgb(21, 26, 21)');
-  await expect.poll(() => page.locator('.btn-secondary').first().evaluate((button) => getComputedStyle(button).backgroundColor)).toBe('rgb(41, 50, 39)');
-  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).color)).toBe('rgb(225, 233, 216)');
-  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).backgroundColor)).toBe('rgb(41, 50, 39)');
+  await expect.poll(() => page.locator('html').evaluate((element) => getComputedStyle(element).getPropertyValue('--button-secondary-bg').trim())).toBe('#293227');
+  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).color)).toBe('rgb(255, 255, 255)');
+  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).backgroundColor)).toBe('rgb(82, 105, 66)');
 
   await page.reload();
   await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible();
