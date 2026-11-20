@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, ArrowRight, CircleHelp, MapPin, ShoppingBasket } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CircleHelp, Leaf, MapPin } from 'lucide-react';
 import { prisma } from '@/lib/db';
 import { getPublicProducts } from '@/lib/catalog';
 import { StorePageShell } from '@/components/store/StorePageShell';
@@ -14,25 +14,54 @@ export async function HomeView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
     prisma.storeSettings.findUnique({ where: { id: 1 } }),
   ]);
   const featured = products.slice(0, 3);
-  const heroImage = featured[0]?.images[0];
 
   return (
     <StorePageShell locale={locale} settings={settings}>
-      <section className='overflow-hidden border-b border-[var(--line)] bg-[var(--cream-50)]'>
-        <div className='container-shell grid min-h-[520px] items-center gap-10 py-12 md:grid-cols-[1.05fr_0.95fr] md:py-16'>
-          <div>
+      <section id='store-hero' dir={english ? 'ltr' : 'rtl'} className='border-b border-[var(--line)] bg-[var(--cream-50)]'>
+        <div className='container-shell py-10 md:py-14'>
+          <aside id='olive-oil-benefits' className='card-surface mx-auto mb-10 max-w-5xl p-5 sm:p-7'>
+            <div className='mb-5 flex items-center justify-center gap-2 text-[var(--olive-800)]'>
+              <Leaf size={20} aria-hidden='true' />
+              <h2 className='text-xl font-extrabold'>{english ? 'Why choose olive oil?' : 'ما فوائد زيت الزيتون؟'}</h2>
+            </div>
+            <div className='grid gap-4 sm:grid-cols-2'>
+              <article className='rounded-2xl bg-[var(--olive-100)] p-5'>
+                <h3 className='font-bold text-[var(--olive-950)]'>{english ? 'A source of unsaturated fats' : 'مصدر للدهون غير المشبعة'}</h3>
+                <p className='mt-2 text-sm leading-7 text-[var(--muted)]'>
+                  {english
+                    ? 'Olive oil is rich in monounsaturated fats. Using unsaturated fats in place of saturated fats may help improve cholesterol as part of a balanced eating pattern.'
+                    : 'زيت الزيتون غني بالدهون الأحادية غير المشبعة. واستخدام الدهون غير المشبعة بدلًا من الدهون المشبعة قد يساعد على تحسين مستويات الكوليسترول ضمن نظام غذائي متوازن.'}
+                </p>
+              </article>
+              <article className='rounded-2xl bg-[var(--olive-100)] p-5'>
+                <h3 className='font-bold text-[var(--olive-950)]'>{english ? 'Easy to enjoy every day' : 'سهل الإضافة إلى وجباتك'}</h3>
+                <p className='mt-2 text-sm leading-7 text-[var(--muted)]'>
+                  {english
+                    ? 'Add it to salads or use it in everyday cooking as a flavorful plant-based oil.'
+                    : 'أضفه إلى السلطات أو استخدمه في الطهي اليومي كزيت نباتي غني بالنكهة.'}
+                </p>
+              </article>
+            </div>
+            <p className='mt-4 text-center text-xs text-[var(--muted)]'>
+              {english ? 'Nutrition guidance: ' : 'للاطلاع على الإرشادات الغذائية: '}
+              <a className='font-bold text-[var(--olive-800)] underline underline-offset-2' href='https://www.heart.org/en/healthy-living/healthy-eating/eat-smart/fats/fats-in-foods' target='_blank' rel='noreferrer'>
+                {english ? 'American Heart Association' : 'جمعية القلب الأمريكية'}
+              </a>
+            </p>
+          </aside>
+          <div className='mx-auto max-w-3xl text-center'>
             <p className='mb-4 inline-flex items-center gap-2 rounded-full bg-[var(--olive-100)] px-4 py-2 text-sm font-bold text-[var(--olive-950)]'>
               {english ? 'El Mohandeseen Olive Oil' : 'زيت زيتون المهندسين'}
             </p>
-            <h1 className='max-w-2xl text-4xl font-black leading-tight text-[var(--olive-950)] sm:text-5xl'>
+            <h1 className='text-4xl font-black leading-tight text-[var(--olive-950)] sm:text-5xl'>
               {english ? 'Choose your size and order olive oil easily.' : 'اختار الحجم المناسب واطلب زيت الزيتون بسهولة.'}
             </h1>
-            <p className='mt-5 max-w-xl text-lg text-[var(--muted)]'>
+            <p className='mx-auto mt-5 max-w-2xl text-lg text-[var(--muted)]'>
               {english
                 ? 'Browse the available sizes and review delivery charges before you confirm.'
-                : 'تصفّح الأحجام المتاحة وراجع رسوم التوصيل قبل تأكيد الطلب.'}
+                : 'تصفح الأحجام المتاحة وراجع رسوم التوصيل قبل تأكيد الطلب.'}
             </p>
-            <div className='mt-8 flex flex-col gap-3 sm:flex-row'>
+            <div className='mt-8 flex flex-col justify-center gap-3 sm:flex-row'>
               <Link href={prefix + '/products'} className='btn-primary'>
                 {english ? 'Shop now' : 'تسوق الآن'}
                 {english ? <ArrowRight size={18} /> : <ArrowLeft size={18} />}
@@ -41,20 +70,6 @@ export async function HomeView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
                 {english ? 'Order now' : 'اطلب الآن'}
               </Link>
             </div>
-          </div>
-          <div className='relative min-h-72 overflow-hidden rounded-[28px] bg-[var(--olive-100)] md:min-h-[420px]'>
-            {heroImage ? (
-              <Image src={heroImage.url} alt={heroImage.alt} fill priority sizes='(max-width: 768px) 100vw, 50vw' className='object-cover' />
-            ) : (
-              <div className='absolute inset-0 grid place-items-center p-8 text-center text-[var(--olive-800)]'>
-                <div>
-                  <ShoppingBasket className='mx-auto mb-3' size={42} strokeWidth={1.3} aria-hidden='true' />
-                  <p className='font-semibold'>
-                    {english ? 'Real product photos will appear here after upload.' : 'ستظهر صور المنتجات الحقيقية بعد رفعها من لوحة الإدارة.'}
-                  </p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </section>

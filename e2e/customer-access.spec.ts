@@ -46,6 +46,26 @@ test('the published 12 liter product uses its matching jerrycan photo', async ({
   expect(imageResponse.ok()).toBe(true);
 });
 
+test('home benefits appear above the headline and the hero product photo is removed', async ({ page }) => {
+  for (const [path, expectedBenefit, direction] of [
+    ['/en', 'monounsaturated fats', 'ltr'],
+    ['/', 'الدهون الأحادية غير المشبعة', 'rtl'],
+  ]) {
+    await page.goto(path);
+    const hero = page.locator('#store-hero');
+    await expect(hero).toHaveAttribute('dir', direction);
+    const benefits = hero.locator('#olive-oil-benefits');
+    await expect(benefits).toContainText(expectedBenefit);
+    await expect(hero.locator('h1')).toBeVisible();
+    await expect(hero.locator('img')).toHaveCount(0);
+    const appearsBeforeHeadline = await benefits.evaluate((element) => {
+      const headline = document.querySelector('#store-hero h1');
+      return Boolean(headline && (element.compareDocumentPosition(headline) & Node.DOCUMENT_POSITION_FOLLOWING));
+    });
+    expect(appearsBeforeHeadline).toBe(true);
+  }
+});
+
 test('dark mode toggle applies the theme and keeps the saved choice', async ({ page }) => {
   await page.goto('/en');
   await page.evaluate(() => window.localStorage.setItem('olive-oil-theme', 'light'));
