@@ -6,6 +6,7 @@ import { Menu, ShoppingBag, UserRound, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/components/cart/CartProvider';
+import { ThemeToggle } from '@/components/store/ThemeToggle';
 
 export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
   const { count } = useCart();
@@ -54,9 +55,11 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
           <a href={prefix + '/#how-to-order'}>{label.order}</a>
         </nav>
         <div className='flex items-center gap-2'>
-          <Link href={english ? '/' : '/en'} className='rounded-lg px-2 py-2 text-sm font-semibold hover:bg-white'>
-            {label.language}
+          <Link href={english ? '/' : '/en'} aria-label={label.language} className='rounded-lg px-2 py-2 text-sm font-semibold hover:bg-white'>
+            <span className='hidden sm:inline'>{label.language}</span>
+            <span className='sm:hidden'>{english ? 'AR' : 'EN'}</span>
           </Link>
+          <ThemeToggle locale={locale} className='hidden md:grid' />
           {signedIn ? (
             <Link href={prefix + '/account'} className='inline-flex min-h-11 items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3 text-sm font-bold' aria-label={accountLabel}>
               <UserRound size={18} aria-hidden='true' />
@@ -68,7 +71,7 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
                 <UserRound size={18} aria-hidden='true' />
                 <span className='hidden sm:inline'>{signInLabel}</span>
               </Link>
-              <Link href={prefix + '/account/signup'} className='hidden min-h-11 items-center rounded-xl bg-[var(--olive-950)] px-3 text-sm font-bold text-white md:inline-flex'>
+              <Link href={prefix + '/account/signup'} className='hidden min-h-11 items-center rounded-xl bg-[var(--button-primary-bg)] px-3 text-sm font-bold text-on-primary hover:bg-[var(--button-primary-hover)] md:inline-flex'>
                 {signUpLabel}
               </Link>
             </>
@@ -76,7 +79,7 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
           <Link href={prefix + '/cart'} className='relative inline-flex min-h-11 items-center gap-2 rounded-xl border border-[var(--line)] bg-white px-3 text-sm font-bold' aria-label={label.cart + ' ' + count}>
             <ShoppingBag size={18} aria-hidden='true' />
             <span className='hidden sm:inline'>{label.cart}</span>
-            {count > 0 && <span className='grid min-w-5 place-items-center rounded-full bg-[var(--olive-950)] px-1 text-xs text-white'>{count}</span>}
+            {count > 0 && <span className='text-on-primary grid min-w-5 place-items-center rounded-full bg-[var(--button-primary-bg)] px-1 text-xs'>{count}</span>}
           </Link>
           <button
             type='button'
@@ -99,6 +102,7 @@ export function StoreHeader({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
             <Link href={prefix + '/account/signup'} className='inline-flex min-h-11 items-center px-3'>{signUpLabel}</Link>
           </>
         )}
+        <ThemeToggle locale={locale} className='md:hidden' />
       </div>
       {menuOpen && (
         <nav className='container-shell grid gap-1 border-t border-[var(--line)] py-3 md:hidden' aria-label={english ? 'Mobile navigation' : 'التنقل'}>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { BarChart3, Bell, LogOut, Menu, Package, Settings2, ShoppingCart, Truck, X } from 'lucide-react';
+import { ThemeToggle } from '@/components/store/ThemeToggle';
 
 type Role = 'OWNER' | 'MANAGER' | 'FULFILLMENT';
 
@@ -33,12 +34,13 @@ export function AdminShell({
   }
 
   return (
-    <div className='min-h-screen bg-[#f5f4ed]'>
+    <div className='min-h-screen bg-[var(--cream-50)]'>
       <header className='sticky top-0 z-30 border-b border-[var(--line)] bg-white'>
         <div className='container-shell flex min-h-16 items-center justify-between gap-4'>
           <Link href='/admin' className='font-extrabold text-[var(--olive-950)]'>لوحة زيت زيتون المهندسين</Link>
           <div className='flex items-center gap-3'>
             <span className='hidden text-sm text-[var(--muted)] sm:block'>{admin.name} · {admin.role}</span>
+            <ThemeToggle />
             <button type='button' onClick={logout} disabled={busy} className='inline-flex min-h-10 items-center gap-2 rounded-lg border border-[var(--line)] px-3 text-sm font-bold'>
               <LogOut size={16} aria-hidden='true' />
               <span className='hidden sm:inline'>{busy ? 'جارٍ الخروج' : 'خروج'}</span>
@@ -59,7 +61,7 @@ export function AdminShell({
                 key={item.href}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
-                className={'flex min-h-11 items-center gap-3 rounded-xl px-3 font-semibold ' + (active ? 'bg-[var(--olive-950)] text-white' : 'text-[var(--olive-950)] hover:bg-[var(--olive-100)]')}
+                className={'flex min-h-11 items-center gap-3 rounded-xl px-3 font-semibold ' + (active ? 'bg-[var(--brand-panel-bg)] text-on-primary' : 'text-[var(--olive-950)] hover:bg-[var(--olive-100)]')}
               >
                 <Icon size={18} aria-hidden='true' />
                 {item.label}

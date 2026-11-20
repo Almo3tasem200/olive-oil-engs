@@ -16,7 +16,7 @@ type FooterSettings = {
 export function StoreFooter({ settings, locale = 'ar' }: { settings?: FooterSettings | null; locale?: 'ar' | 'en' }) {
   const english = locale === 'en';
   return (
-    <footer className='mt-20 bg-[var(--olive-950)] py-10 text-white'>
+    <footer className='mt-20 bg-[var(--brand-panel-bg)] py-10 text-white'>
       <div className='container-shell grid gap-8 sm:grid-cols-2'>
         <div>
           <p className='text-lg font-bold'>{english ? 'El Mohandeseen Olive Oil' : 'زيت زيتون المهندسين'}</p>

@@ -60,7 +60,7 @@ export async function HomeView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
       </section>
 
       <section className='container-shell grid items-center gap-8 py-14 md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]' id='about'>
-        <div className='relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-full bg-[var(--olive-950)] p-4 shadow-lg'>
+        <div className='relative mx-auto aspect-square w-full max-w-xs overflow-hidden rounded-full bg-[var(--brand-panel-bg)] p-4 shadow-lg'>
           <Image
             src='/reference-assets/brand-logo.jpg'
             alt={english ? 'El Mohandeseen Olive Oil logo' : 'شعار زيت زيتون المهندسين'}
@@ -170,13 +170,13 @@ export async function HomeView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
         </div>
       </section>
 
-      <section className='bg-[var(--olive-950)] py-12 text-white'>
+      <section className='bg-[var(--brand-panel-bg)] py-12 text-white'>
         <div className='container-shell flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center'>
           <div>
             <h2 className='text-2xl font-extrabold'>{english ? 'Choose your preferred size' : 'اختار الحجم المناسب لك'}</h2>
             <p className='mt-2 text-white/75'>{english ? 'Review the delivery fee before you place the order.' : 'راجع رسوم التوصيل قبل إرسال الطلب.'}</p>
           </div>
-          <Link href={prefix + '/products'} className='inline-flex min-h-11 items-center rounded-xl bg-white px-5 font-bold text-[var(--olive-950)]'>
+          <Link href={prefix + '/products'} className='inline-flex min-h-11 items-center rounded-xl bg-white px-5 font-bold text-[var(--brand-panel-bg)]'>
             {english ? 'Browse products' : 'تصفّح المنتجات'}
           </Link>
         </div>

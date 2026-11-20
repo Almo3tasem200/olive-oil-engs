@@ -46,6 +46,32 @@ test('the published 12 liter product uses its matching jerrycan photo', async ({
   expect(imageResponse.ok()).toBe(true);
 });
 
+test('dark mode toggle applies the theme and keeps the saved choice', async ({ page }) => {
+  await page.goto('/en');
+  await page.evaluate(() => window.localStorage.setItem('olive-oil-theme', 'light'));
+  await page.reload();
+  await expect.poll(() => page.getByRole('link', { name: 'Sign up' }).evaluate((link) => getComputedStyle(link).color)).toBe('rgb(255, 255, 255)');
+
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await expect.poll(() => page.locator('body').evaluate((body) => getComputedStyle(body).backgroundColor)).toBe('rgb(21, 26, 21)');
+  await expect.poll(() => page.locator('.btn-secondary').first().evaluate((button) => getComputedStyle(button).backgroundColor)).toBe('rgb(41, 50, 39)');
+
+  await page.reload();
+  await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible();
+  await page.getByRole('button', { name: 'Switch to light mode' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'light');
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/en');
+  await page.evaluate(() => window.localStorage.setItem('olive-oil-theme', 'light'));
+  await page.reload();
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  const dimensions = await page.evaluate(() => ({ viewport: innerWidth, content: document.documentElement.scrollWidth }));
+  expect(dimensions.content).toBeLessThanOrEqual(dimensions.viewport);
+});
+
 const recoveryEmailIsConfigured = Boolean(
   process.env.RESEND_API_KEY &&
   process.env.RESEND_API_KEY !== 'False' &&

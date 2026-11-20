@@ -11,8 +11,47 @@
   --muted: #687166;
   --line: #dedfd4;
   --danger: #a43f38;
+  --danger-surface: #fff0ef;
   --surface: #ffffff;
+  --surface-subtle: #f1f3eb;
+  --field-bg: #ffffff;
+  --field-disabled-bg: #f0f1eb;
+  --brand-panel-bg: #263326;
+  --button-primary-bg: #3d5138;
+  --button-primary-hover: #31452e;
+  --button-primary-text: #ffffff;
+  --button-secondary-bg: #edf0e7;
+  --button-secondary-hover: #e2e7d8;
+  --button-secondary-text: #263326;
+  --button-secondary-border: #9aa58d;
   color-scheme: light;
+}
+
+[data-theme='dark'] {
+  --olive-950: #e7eddf;
+  --olive-800: #c1d0aa;
+  --olive-600: #a4b786;
+  --olive-100: #303a2e;
+  --cream-50: #151a15;
+  --gold-500: #d1b86c;
+  --ink: #e8ece4;
+  --muted: #b0baad;
+  --line: #3b453a;
+  --danger: #ff9a90;
+  --danger-surface: #3a2422;
+  --surface: #20271f;
+  --surface-subtle: #2a3328;
+  --field-bg: #20271f;
+  --field-disabled-bg: #2c342a;
+  --brand-panel-bg: #101610;
+  --button-primary-bg: #526942;
+  --button-primary-hover: #617a4d;
+  --button-primary-text: #ffffff;
+  --button-secondary-bg: #293227;
+  --button-secondary-hover: #35412f;
+  --button-secondary-text: #e1e9d8;
+  --button-secondary-border: #667553;
+  color-scheme: dark;
 }
 
 * {
@@ -75,18 +114,19 @@ textarea:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid var(--olive-950);
+  border: 1px solid var(--button-primary-bg);
   border-radius: 12px;
   padding: 10px 18px;
-  background: var(--olive-950);
-  color: #fff;
+  background: var(--button-primary-bg);
+  color: var(--button-primary-text);
   font-weight: 700;
   transition: background 140ms ease, transform 140ms ease;
   cursor: pointer;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--olive-800);
+  border-color: var(--button-primary-hover);
+  background: var(--button-primary-hover);
   transform: translateY(-1px);
 }
 
@@ -101,13 +141,24 @@ textarea:focus-visible {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  border: 1px solid var(--olive-800);
+  border: 1px solid var(--button-secondary-border);
   border-radius: 12px;
   padding: 10px 18px;
-  background: transparent;
-  color: var(--olive-950);
+  background: var(--button-secondary-bg);
+  color: var(--button-secondary-text);
   font-weight: 700;
+  transition: background 140ms ease, border-color 140ms ease, transform 140ms ease;
   cursor: pointer;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--button-secondary-border);
+  background: var(--button-secondary-hover);
+  transform: translateY(-1px);
+}
+
+.text-on-primary {
+  color: var(--button-primary-text);
 }
 
 .field-label {
@@ -123,19 +174,35 @@ textarea:focus-visible {
   border: 1px solid #c8ccbe;
   border-radius: 10px;
   padding: 10px 12px;
-  background: #fff;
+  background: var(--field-bg);
   color: var(--ink);
 }
 
 .field-control:disabled {
-  background: #f0f1eb;
-  color: #6b7168;
+  background: var(--field-disabled-bg);
+  color: var(--muted);
 }
 
 .card-surface {
   border: 1px solid var(--line);
   border-radius: 18px;
   background: var(--surface);
+}
+
+[data-theme='dark'] .bg-white {
+  background-color: var(--surface);
+}
+
+[data-theme='dark'] [class~='hover:bg-white']:hover {
+  background-color: var(--surface-subtle);
+}
+
+[data-theme='dark'] .bg-red-50 {
+  background-color: var(--danger-surface);
+}
+
+[data-theme='dark'] [class~='hover:bg-red-50']:hover {
+  background-color: var(--danger-surface);
 }
 
 @media (min-width: 700px) {
