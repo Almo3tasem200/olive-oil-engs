@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Check, Plus } from 'lucide-react';
 import { useCart } from '@/components/cart/CartProvider';
 import { formatEgp } from '@/lib/money';
+import { capacityLabel, packageLabel } from '@/lib/product-labels';
 
 export type StoreProduct = {
   id: string;
@@ -17,25 +18,6 @@ export type StoreProduct = {
   pricePiasters: number;
   images: { id: string; url: string; alt: string; isPrimary: boolean }[];
 };
-
-export function capacityLabel(volumeMl: number, locale: 'ar' | 'en') {
-  if (locale === 'en') {
-    if (volumeMl === 500) return '500 ml';
-    if (volumeMl === 1000) return '1 liter';
-    if (volumeMl === 12000) return '12 liters';
-    return volumeMl + ' ml';
-  }
-  if (volumeMl === 500) return '500 مل';
-  if (volumeMl === 1000) return '1 لتر';
-  if (volumeMl === 12000) return '12 لتر';
-  return volumeMl + ' مل';
-}
-
-export function packageLabel(packaging: string, locale: 'ar' | 'en') {
-  if (packaging === 'DARK_PLASTIC_BOTTLE') return locale === 'en' ? 'Dark plastic bottle' : 'عبوة بلاستيك داكنة';
-  if (packaging === 'PLASTIC_JERRYCAN') return locale === 'en' ? 'Plastic jerrycan' : 'جركن بلاستيك';
-  return locale === 'en' ? 'Plastic package' : 'عبوة بلاستيك';
-}
 
 export function ProductCard({ product, locale = 'ar' }: { product: StoreProduct; locale?: 'ar' | 'en' }) {
   const { addItem } = useCart();

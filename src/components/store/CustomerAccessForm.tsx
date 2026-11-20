@@ -62,6 +62,11 @@ export function CustomerAccessForm({
         <input className='field-control' type='password' autoComplete={registering ? 'new-password' : 'current-password'} dir='ltr' required minLength={registering ? 12 : 1} maxLength={200} value={password} onChange={(event) => setPassword(event.target.value)} />
         {registering && <span className='mt-1 block text-xs text-[var(--muted)]'>{english ? 'Use at least 12 characters.' : 'استخدم 12 حرفًا على الأقل.'}</span>}
       </label>
+      {!registering && (
+        <Link className='-mt-2 justify-self-end text-sm font-bold text-[var(--olive-800)] underline underline-offset-4' href={english ? '/en/account/forgot-password' : '/account/forgot-password'}>
+          {english ? 'Forgot password?' : 'هل نسيت كلمة المرور؟'}
+        </Link>
+      )}
       {registering && (
         <label>
           <span className='field-label'>{english ? 'Confirm password' : 'تأكيد كلمة المرور'}</span>

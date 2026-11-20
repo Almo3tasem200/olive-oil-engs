@@ -8,7 +8,14 @@ import {
 import { normalizeEgyptianPhone } from '@/lib/phone';
 import { canEditPrices, canManageProducts } from '@/lib/permissions';
 import { validStatusTransition } from '@/lib/order-rules';
-import { customerRegistrationSchema, priceUpdateSchema, productContentSchema } from '@/lib/validation';
+import { capacityLabel, packageLabel } from '@/lib/product-labels';
+import {
+  customerRegistrationSchema,
+  passwordResetCompleteSchema,
+  passwordResetRequestSchema,
+  priceUpdateSchema,
+  productContentSchema,
+} from '@/lib/validation';
 
 describe('money calculations', () => {
   it('parses exact EGP values into integer piastres', () => {
@@ -84,6 +91,39 @@ describe('customer registration validation', () => {
     expect(customerRegistrationSchema.safeParse({ name: 'Mona Ali', email: 'mona@example.com', password: 'long-password-123' }).success).toBe(true);
     expect(customerRegistrationSchema.safeParse({ name: 'Mona Ali', email: 'not-an-email', password: 'long-password-123' }).success).toBe(false);
     expect(customerRegistrationSchema.safeParse({ name: 'Mona Ali', email: 'mona@example.com', password: 'short' }).success).toBe(false);
+  });
+});
+
+describe('customer password reset validation', () => {
+  it('accepts a six-digit email code and a strong replacement password', () => {
+    expect(passwordResetRequestSchema.safeParse({ email: 'customer@example.com' }).success).toBe(true);
+    expect(passwordResetCompleteSchema.safeParse({
+      email: 'customer@example.com',
+      code: '004281',
+      password: 'new-olive-password-2026',
+    }).success).toBe(true);
+  });
+
+  it('rejects malformed codes and weak passwords', () => {
+    expect(passwordResetCompleteSchema.safeParse({
+      email: 'customer@example.com',
+      code: '4281',
+      password: 'new-olive-password-2026',
+    }).success).toBe(false);
+    expect(passwordResetCompleteSchema.safeParse({
+      email: 'customer@example.com',
+      code: '004281',
+      password: 'short',
+    }).success).toBe(false);
+    expect(passwordResetRequestSchema.safeParse({ email: 'not-an-email' }).success).toBe(false);
+  });
+});
+
+describe('catalog labels', () => {
+  it('labels the 12 liter jerrycan in Arabic and English', () => {
+    expect(capacityLabel(12000, 'en')).toBe('12 liters');
+    expect(capacityLabel(12000, 'ar')).toBe('12 لتر');
+    expect(packageLabel('PLASTIC_JERRYCAN', 'en')).toBe('Plastic jerrycan');
   });
 });
 

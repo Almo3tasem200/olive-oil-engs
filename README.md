@@ -4,7 +4,7 @@ Arabic-first e-commerce application for El Mohandeseen Olive Oil.
 
 ## Current state
 
-Initial catalog prices are stored in the database seed, not in the storefront: 500 ml EGP 275, 1 liter EGP 550, and 12 liters EGP 6,100. Prices remain owner-managed. The supplied reference storefront provides a brand logo and 500 ml / 1 liter product photos; those matching products can be published with the asset-import step below. The 12 liter product stays unpublished until its own matching photo is approved.
+Initial catalog prices are stored in the database seed, not in the storefront: 500 ml EGP 275, 1 liter EGP 550, and 12 liters EGP 6,100. Prices remain owner-managed. The supplied reference storefront provides a brand logo and matching 500 ml / 1 liter product photos; the owner-supplied 12 liter jerrycan photo is also included. Importing the assets publishes their matching products without changing their database prices.
 
 Delivery zones and COD start disabled/unconfigured. Configure these in Admin after the business owner confirms the live policy. A direct WhatsApp contact link can be shown; no messaging API, email service, or payment provider is configured by default.
 
@@ -28,11 +28,14 @@ Delivery zones and COD start disabled/unconfigured. Configure these in Admin aft
 
 Customers can create an account or order as guests. Orders placed while signed in appear in that customer's account. Admin accounts are private and have no public sign-up. The initial owner is the only account with price-edit permission. Product content managers can edit copy and images but cannot edit prices. Price changes have a separate owner-only server route and an immutable audit/history entry.
 
+Customers who forget their password can request a one-time six-digit code sent to the email on their account. Codes expire after 10 minutes, allow at most five verification attempts, and are stored as keyed hashes. A successful reset revokes that customer's active sessions. To enable recovery email, configure `RESEND_API_KEY`, `RESEND_FROM_EMAIL` (a verified Resend sender), and the 32-byte hex `APP_ENCRYPTION_KEY` in `.env` or the production secret manager. Without these settings, the reset page explains that recovery is unavailable; other customer account features continue to work.
+
 ## Production configuration
 
 - Set a strong random APP_ENCRYPTION_KEY (32-byte hex) and DATABASE_URL in the hosting secret manager.
 - Set MEDIA_DRIVER=s3, S3_ENDPOINT, S3_REGION, S3_BUCKET, S3_ACCESS_KEY_ID, S3_SECRET_ACCESS_KEY, and MEDIA_PUBLIC_BASE_URL. Use a private write credential and public read through an approved CDN/bucket policy.
 - Set STORE_BASE_URL to the public HTTPS origin.
+- Configure `RESEND_API_KEY` and a verified `RESEND_FROM_EMAIL` for password reset email delivery; keep both values in the hosting secret manager.
 - Apply migrations with npm run db:deploy. Seed only when the database is empty/approved.
 - Provision the first owner account using a private one-time deployment command; do not put real credentials in source control.
 - Configure delivery/COD and publish products only after verifying prices, policies, and actual product imagery.

@@ -22,6 +22,46 @@ test('storefront exposes customer sign-in and sign-up routes', async ({ page }) 
   await expect(page.getByRole('link', { name: 'أنشئ حسابًا' })).toBeVisible();
 });
 
+test('forgot-password recovery is reachable in English and Arabic', async ({ page }) => {
+  await page.goto('/en/account/login');
+  await expect(page.getByRole('link', { name: 'Forgot password?' })).toHaveAttribute('href', '/en/account/forgot-password');
+  await page.goto('/en/account/forgot-password');
+  await expect(page.getByRole('heading', { name: 'Reset your password' })).toBeVisible();
+  await expect(page.getByLabel('Email address')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Send verification code' })).toBeVisible();
+
+  await page.goto('/account/login');
+  await expect(page.locator("a[href='/account/forgot-password']")).toBeVisible();
+  await page.goto('/account/forgot-password');
+  await expect(page.locator('input[type="email"]')).toBeVisible();
+});
+
+test('the published 12 liter product uses its matching jerrycan photo', async ({ page }) => {
+  await page.goto('/en/products/olive-oil-12l');
+  await expect(page.getByRole('heading', { name: 'Olive Oil - 12 liters' })).toBeVisible();
+  const productImage = page.locator("img[alt='Dark plastic 12 liter olive oil jerrycan']");
+  await expect(productImage).toBeVisible();
+  await expect.poll(() => productImage.evaluate((image) => (image as HTMLImageElement).naturalWidth)).toBeGreaterThan(0);
+  const imageResponse = await page.request.get('/reference-assets/olive-oil-12l.jpg');
+  expect(imageResponse.ok()).toBe(true);
+});
+
+const recoveryEmailIsConfigured = Boolean(
+  process.env.RESEND_API_KEY &&
+  process.env.RESEND_API_KEY !== 'False' &&
+  process.env.RESEND_FROM_EMAIL &&
+  process.env.RESEND_FROM_EMAIL !== 'False' &&
+  /^[a-fA-F0-9]{64}$/.test(process.env.APP_ENCRYPTION_KEY ?? ''),
+);
+
+test('forgot-password form explains when email recovery is not configured', async ({ page }) => {
+  test.skip(recoveryEmailIsConfigured, 'Recovery email is configured in this environment.');
+  await page.goto('/en/account/forgot-password');
+  await page.getByLabel('Email address').fill('customer@example.com');
+  await page.getByRole('button', { name: 'Send verification code' }).click();
+  await expect(page.locator("p[role='alert']")).toContainText('not configured yet');
+});
+
 test('sign-up remains discoverable from the mobile navigation', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');

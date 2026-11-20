@@ -48,6 +48,16 @@ async function main() {
       altAr: 'عبوة زيت زيتون المهندسين سعة لتر واحد',
       altEn: 'El Mohandeseen Olive Oil 1 liter bottle',
     },
+    {
+      sku: 'OLIVE-OIL-12L',
+      nameAr: 'زيت زيتون - 12 لتر',
+      nameEn: 'Olive Oil - 12 liters',
+      descriptionAr: 'جركن بلاستيك - 12 لتر',
+      descriptionEn: 'Plastic jerrycan - 12 liters',
+      objectKey: 'reference/olive-oil-12l.jpg',
+      altAr: 'عبوة زيت زيتون سعة 12 لتر',
+      altEn: 'Dark plastic 12 liter olive oil jerrycan',
+    },
   ];
 
   for (const asset of products) {
@@ -88,7 +98,7 @@ async function main() {
     });
   }
 
-  console.log('Reference logo, store contact links, and matching 500 ml / 1 liter product photos imported. Existing database prices were not changed.');
+  console.log('Reference logo, store contact links, and matching 500 ml, 1 liter, and 12 liter product photos imported. Existing database prices were not changed.');
 }
 
 main()

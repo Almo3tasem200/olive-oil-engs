@@ -15,6 +15,16 @@ export const customerRegistrationSchema = z.object({
   password: z.string().min(12).max(200),
 }).strict();
 
+export const passwordResetRequestSchema = z.object({
+  email: z.string().trim().email().max(254),
+}).strict();
+
+export const passwordResetCompleteSchema = z.object({
+  email: z.string().trim().email().max(254),
+  code: z.string().regex(/^\d{6}$/),
+  password: z.string().min(12).max(200),
+}).strict();
+
 export const checkoutSchema = z.object({
   items: z.array(z.object({
     productId: z.string().uuid(),

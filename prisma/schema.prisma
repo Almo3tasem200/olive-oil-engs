@@ -86,15 +86,16 @@ model AdminSession {
 }
 
 model CustomerAccount {
-  id           String            @id @default(uuid()) @db.Uuid
-  email        String            @unique @db.VarChar(254)
-  name         String            @db.VarChar(120)
-  passwordHash String            @db.VarChar(255)
-  isActive     Boolean           @default(true)
-  createdAt    DateTime          @default(now()) @db.Timestamptz(3)
-  updatedAt    DateTime          @updatedAt @db.Timestamptz(3)
-  sessions     CustomerSession[]
-  orders       Order[]
+  id             String                  @id @default(uuid()) @db.Uuid
+  email          String                  @unique @db.VarChar(254)
+  name           String                  @db.VarChar(120)
+  passwordHash   String                  @db.VarChar(255)
+  isActive       Boolean                 @default(true)
+  createdAt      DateTime                @default(now()) @db.Timestamptz(3)
+  updatedAt      DateTime                @updatedAt @db.Timestamptz(3)
+  sessions       CustomerSession[]
+  passwordResets CustomerPasswordReset[]
+  orders         Order[]
 }
 
 model CustomerSession {
@@ -107,6 +108,20 @@ model CustomerSession {
   customer   CustomerAccount @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   @@index([customerId, expiresAt])
+}
+
+model CustomerPasswordReset {
+  id         String          @id @default(uuid()) @db.Uuid
+  customerId String          @db.Uuid
+  codeHash   String          @db.VarChar(64)
+  expiresAt  DateTime        @db.Timestamptz(3)
+  consumedAt DateTime?       @db.Timestamptz(3)
+  attempts   Int             @default(0)
+  createdAt  DateTime        @default(now()) @db.Timestamptz(3)
+  customer   CustomerAccount @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@index([customerId, createdAt])
+  @@index([expiresAt])
 }
 
 model Product {

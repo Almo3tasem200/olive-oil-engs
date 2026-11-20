@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { formatEgp } from '@/lib/money';
-import { capacityLabel, packageLabel } from '@/components/store/ProductCard';
+import { capacityLabel, packageLabel } from '@/lib/product-labels';
 
 type OrderData = {
   id: string;

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/components/cart/CartProvider';
 import type { StoreProduct } from '@/components/store/ProductCard';
 import { formatEgp } from '@/lib/money';
-import { capacityLabel } from '@/components/store/ProductCard';
+import { capacityLabel } from '@/lib/product-labels';
 
 type Zone = {
   id: string;

@@ -5,7 +5,7 @@ import { prisma } from '@/lib/db';
 import { formatEgp } from '@/lib/money';
 import { StorePageShell } from '@/components/store/StorePageShell';
 import { AddToCartPanel } from '@/components/store/AddToCartPanel';
-import { capacityLabel, packageLabel } from '@/components/store/ProductCard';
+import { capacityLabel, packageLabel } from '@/lib/product-labels';
 
 export async function ProductDetailView({ slug, locale = 'ar' }: { slug: string; locale?: 'ar' | 'en' }) {
   const [product, settings] = await Promise.all([

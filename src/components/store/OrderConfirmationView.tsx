@@ -4,7 +4,7 @@ import { prisma } from '@/lib/db';
 import { getOrderConfirmation } from '@/lib/orders';
 import { formatEgp } from '@/lib/money';
 import { StorePageShell } from '@/components/store/StorePageShell';
-import { capacityLabel } from '@/components/store/ProductCard';
+import { capacityLabel } from '@/lib/product-labels';
 
 export async function OrderConfirmationView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
   const english = locale === 'en';

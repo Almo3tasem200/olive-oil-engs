@@ -6,7 +6,7 @@ import { Minus, Plus, Trash2 } from 'lucide-react';
 import { useCart } from '@/components/cart/CartProvider';
 import type { StoreProduct } from '@/components/store/ProductCard';
 import { formatEgp } from '@/lib/money';
-import { capacityLabel, packageLabel } from '@/components/store/ProductCard';
+import { capacityLabel, packageLabel } from '@/lib/product-labels';
 
 export function CartView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
   const english = locale === 'en';
