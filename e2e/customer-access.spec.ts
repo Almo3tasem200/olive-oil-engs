@@ -51,11 +51,16 @@ test('dark mode toggle applies the theme and keeps the saved choice', async ({ p
   await page.evaluate(() => window.localStorage.setItem('olive-oil-theme', 'light'));
   await page.reload();
   await expect.poll(() => page.getByRole('link', { name: 'Sign up' }).evaluate((link) => getComputedStyle(link).color)).toBe('rgb(255, 255, 255)');
+  const browseProductsButton = page.getByRole('link', { name: 'Browse products' });
+  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).color)).toBe('rgb(38, 51, 38)');
+  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).backgroundColor)).toBe('rgb(237, 240, 231)');
 
   await page.getByRole('button', { name: 'Switch to dark mode' }).click();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
   await expect.poll(() => page.locator('body').evaluate((body) => getComputedStyle(body).backgroundColor)).toBe('rgb(21, 26, 21)');
   await expect.poll(() => page.locator('.btn-secondary').first().evaluate((button) => getComputedStyle(button).backgroundColor)).toBe('rgb(41, 50, 39)');
+  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).color)).toBe('rgb(225, 233, 216)');
+  await expect.poll(() => browseProductsButton.evaluate((link) => getComputedStyle(link).backgroundColor)).toBe('rgb(41, 50, 39)');
 
   await page.reload();
   await expect(page.getByRole('button', { name: 'Switch to light mode' })).toBeVisible();

@@ -176,7 +176,7 @@ export async function HomeView({ locale = 'ar' }: { locale?: 'ar' | 'en' }) {
             <h2 className='text-2xl font-extrabold'>{english ? 'Choose your preferred size' : 'اختار الحجم المناسب لك'}</h2>
             <p className='mt-2 text-white/75'>{english ? 'Review the delivery fee before you place the order.' : 'راجع رسوم التوصيل قبل إرسال الطلب.'}</p>
           </div>
-          <Link href={prefix + '/products'} className='inline-flex min-h-11 items-center rounded-xl bg-white px-5 font-bold text-[var(--brand-panel-bg)]'>
+          <Link href={prefix + '/products'} className='btn-secondary px-5'>
             {english ? 'Browse products' : 'تصفّح المنتجات'}
           </Link>
         </div>
