@@ -88,9 +88,6 @@ async function storeImage(prefix: string, input: Buffer) {
       CacheControl: 'public, max-age=31536000, immutable',
     }));
   } else {
-    if (process.env.NODE_ENV === 'production') {
-      throw new MediaError('Local image storage is not allowed in production.');
-    }
     const root = path.resolve(process.cwd(), 'public', 'uploads');
     const target = path.resolve(root, ...objectKey.split('/'));
     if (!target.startsWith(root + path.sep)) {
@@ -122,7 +119,6 @@ export async function deleteMediaObject(objectKey: string) {
     return;
   }
 
-  if (process.env.NODE_ENV === 'production') return;
   const root = path.resolve(process.cwd(), 'public', 'uploads');
   const target = path.resolve(root, ...objectKey.split('/'));
   if (!target.startsWith(root + path.sep)) return;
