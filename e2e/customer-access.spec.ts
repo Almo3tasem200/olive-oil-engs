@@ -22,6 +22,27 @@ test('storefront exposes customer sign-in and sign-up routes', async ({ page }) 
   await expect(page.getByRole('link', { name: 'أنشئ حسابًا' })).toBeVisible();
 });
 
+test('checkout requires sign-in and the order endpoint rejects guests', async ({ page }) => {
+  await page.goto('/');
+  const response = await page.evaluate(async () => {
+    const result = await fetch('/api/checkout/orders', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: '{}',
+    });
+    return result.status;
+  });
+  expect(response).toBe(401);
+
+  await page.goto('/checkout');
+  await expect(page).toHaveURL('/account/login?returnTo=%2Fcheckout');
+  await expect(page.getByText('سجّل الدخول أو أنشئ حسابًا للمتابعة إلى إتمام الطلب.')).toBeVisible();
+
+  await page.goto('/en/checkout');
+  await expect(page).toHaveURL('/en/account/login?returnTo=%2Fen%2Fcheckout');
+  await expect(page.getByText('Sign in or create an account to continue to checkout.')).toBeVisible();
+});
+
 test('forgot-password recovery is reachable in English and Arabic', async ({ page }) => {
   await page.goto('/en/account/login');
   await expect(page.getByRole('link', { name: 'Forgot password?' })).toHaveAttribute('href', '/en/account/forgot-password');
@@ -158,22 +179,41 @@ test('customer can register, sign out, and sign in again', async ({ page }) => {
   const password = 'olive-oil-test-password-2026';
 
   try {
-    await page.goto('/account/signup');
+    await page.goto('/');
+    const catalogResponse = await page.request.get('/api/catalog/products?locale=ar');
+    expect(catalogResponse.ok()).toBe(true);
+    const catalog = await catalogResponse.json() as { products: { id: string }[] };
+    const productId = catalog.products[0]?.id;
+    if (!productId) throw new Error('No active product is available for the checkout test.');
+    const cartContents = JSON.stringify([{ productId, quantity: 1 }]);
+    await page.evaluate((contents) => localStorage.setItem('emo-cart-v1', contents), cartContents);
+    await page.goto('/account/signup?returnTo=%2Fcheckout');
     await page.getByLabel('الاسم الكامل').fill('Smoke Test Customer');
     await page.getByLabel('البريد الإلكتروني').fill(email);
     await page.locator("input[autocomplete='new-password']").nth(0).fill(password);
     await page.locator("input[autocomplete='new-password']").nth(1).fill(password);
+    const registrationResponse = page.waitForResponse((response) =>
+      response.url().endsWith('/api/customer/auth/register'),
+    );
     await page.getByRole('button', { name: 'إنشاء حساب' }).click();
-    await page.waitForURL('**/account');
+    expect((await registrationResponse).status()).toBe(201);
+    await page.waitForURL('**/checkout');
+    await expect(page).toHaveURL('/checkout');
+    await expect(page.getByRole('heading', { name: 'إتمام الطلب' })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('emo-cart-v1'))).toBe(cartContents);
+    await page.goto('/account');
     await expect(page.getByText(email)).toBeVisible();
 
     await page.getByRole('button', { name: 'تسجيل الخروج' }).click();
     await page.waitForURL('**/account/login');
+    await page.goto('/checkout');
+    await expect(page).toHaveURL('/account/login?returnTo=%2Fcheckout');
     await page.getByLabel('البريد الإلكتروني').fill(email);
     await page.locator("input[autocomplete='current-password']").fill(password);
     await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
-    await page.waitForURL('**/account');
-    await expect(page.getByText(email)).toBeVisible();
+    await page.waitForURL('**/checkout');
+    await expect(page.getByRole('heading', { name: 'إتمام الطلب' })).toBeVisible();
+    await expect.poll(() => page.evaluate(() => localStorage.getItem('emo-cart-v1'))).toBe(cartContents);
   } finally {
     await prisma.customerAccount.deleteMany({ where: { email } });
     await prisma.$disconnect();

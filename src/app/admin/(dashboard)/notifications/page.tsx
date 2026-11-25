@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import { NotificationsAdmin } from '@/components/admin/NotificationsAdmin';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageOrders } from '@/lib/permissions';
+import { NotificationsAdmin } from '@/frontend/components/admin/NotificationsAdmin';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageOrders } from '@/backend/permissions';
 
 export const dynamic = 'force-dynamic';
 

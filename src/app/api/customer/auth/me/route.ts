@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getCurrentCustomer } from '@/lib/customer-auth';
-import { prisma } from '@/lib/db';
+import { getCurrentCustomer } from '@/backend/customer-auth';
+import { prisma } from '@/backend/db';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';

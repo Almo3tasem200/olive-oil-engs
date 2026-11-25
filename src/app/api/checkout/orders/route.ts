@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { checkoutSchema } from '@/lib/validation';
-import { createOrder } from '@/lib/orders';
-import { CommerceError, quoteCart } from '@/lib/orders';
-import { parseBody, apiFailure } from '@/lib/http';
-import { clientAddress, consumeRateLimit } from '@/lib/rate-limit';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { getCurrentCustomer } from '@/lib/customer-auth';
+import { checkoutSchema } from '@/backend/validation';
+import { createOrder } from '@/backend/orders';
+import { CommerceError, quoteCart } from '@/backend/orders';
+import { parseBody, apiFailure } from '@/backend/http';
+import { clientAddress, consumeRateLimit } from '@/backend/rate-limit';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { getCurrentCustomer } from '@/backend/customer-auth';
 
 export const runtime = 'nodejs';
 
@@ -22,12 +22,19 @@ export async function POST(request: Request) {
     });
   }
 
+  const customer = await getCurrentCustomer();
+  if (!customer) {
+    return NextResponse.json({ error: 'Sign in to complete your order.' }, {
+      status: 401,
+      headers: { 'Cache-Control': 'no-store' },
+    });
+  }
+
   const parsed = await parseBody(request, checkoutSchema);
   if (!parsed.success) return parsed.response;
 
   try {
-    const customer = await getCurrentCustomer();
-    const result = await createOrder(parsed.data, customer?.id);
+    const result = await createOrder(parsed.data, customer.id);
     const response = NextResponse.json({
       orderNumber: result.orderNumber,
       totalPiasters: result.totalPiasters,

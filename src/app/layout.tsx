@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import { CartProvider } from '@/components/cart/CartProvider';
+import { CartProvider } from '@/frontend/components/cart/CartProvider';
 
 const storeUrl = process.env.STORE_BASE_URL || 'http://localhost:3000';
 

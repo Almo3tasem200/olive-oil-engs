@@ -1,9 +1,9 @@
 import { OrderStatus } from '@/generated/prisma/client';
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageOrders } from '@/lib/permissions';
-import { unauthorized, forbidden } from '@/lib/http';
+import { prisma } from '@/backend/db';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageOrders } from '@/backend/permissions';
+import { unauthorized, forbidden } from '@/backend/http';
 
 export const runtime = 'nodejs';
 

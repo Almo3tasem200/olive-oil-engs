@@ -1,4 +1,4 @@
-import { HomeView } from '@/components/store/HomeView';
+import { HomeView } from '@/frontend/components/store/HomeView';
 
 export const dynamic = 'force-dynamic';
 

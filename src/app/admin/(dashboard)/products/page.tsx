@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import { ProductsAdmin } from '@/components/admin/ProductsAdmin';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageProducts } from '@/lib/permissions';
+import { ProductsAdmin } from '@/frontend/components/admin/ProductsAdmin';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageProducts } from '@/backend/permissions';
 
 export const dynamic = 'force-dynamic';
 

@@ -1,12 +1,12 @@
 import argon2 from 'argon2';
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { clientAddress, consumeRateLimit } from '@/lib/rate-limit';
-import { sha256, newOpaqueToken } from '@/lib/security';
-import { loginSchema } from '@/lib/validation';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { parseBody } from '@/lib/http';
-import { sessionCookieName } from '@/lib/auth';
+import { prisma } from '@/backend/db';
+import { clientAddress, consumeRateLimit } from '@/backend/rate-limit';
+import { sha256, newOpaqueToken } from '@/backend/security';
+import { loginSchema } from '@/backend/validation';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { parseBody } from '@/backend/http';
+import { sessionCookieName } from '@/backend/auth';
 
 export const runtime = 'nodejs';
 

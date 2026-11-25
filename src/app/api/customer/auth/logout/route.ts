@@ -4,8 +4,8 @@ import {
   clearCustomerSessionCookie,
   customerSessionCookieName,
   revokeCurrentCustomerSession,
-} from '@/lib/customer-auth';
-import { isSameOriginRequest } from '@/lib/csrf';
+} from '@/backend/customer-auth';
+import { isSameOriginRequest } from '@/backend/csrf';
 
 export const runtime = 'nodejs';
 

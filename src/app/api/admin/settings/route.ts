@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageSettings } from '@/lib/permissions';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { settingsSchema } from '@/lib/validation';
-import { parseBody, apiFailure, unauthorized, forbidden } from '@/lib/http';
-import { writeAudit } from '@/lib/audit';
+import { prisma } from '@/backend/db';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageSettings } from '@/backend/permissions';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { settingsSchema } from '@/backend/validation';
+import { parseBody, apiFailure, unauthorized, forbidden } from '@/backend/http';
+import { writeAudit } from '@/backend/audit';
 
 export const runtime = 'nodejs';
 

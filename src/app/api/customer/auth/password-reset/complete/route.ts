@@ -1,12 +1,12 @@
 import argon2 from 'argon2';
 import { createHmac, timingSafeEqual } from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { prisma } from '@/lib/db';
-import { parseBody } from '@/lib/http';
-import { clientAddress, consumeRateLimit } from '@/lib/rate-limit';
-import { passwordResetIsConfigured } from '@/lib/password-reset-email';
-import { passwordResetCompleteSchema } from '@/lib/validation';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { prisma } from '@/backend/db';
+import { parseBody } from '@/backend/http';
+import { clientAddress, consumeRateLimit } from '@/backend/rate-limit';
+import { passwordResetIsConfigured } from '@/backend/password-reset-email';
+import { passwordResetCompleteSchema } from '@/backend/validation';
 
 export const runtime = 'nodejs';
 

@@ -1,11 +1,11 @@
 import { randomInt, randomUUID, createHmac } from 'node:crypto';
 import { NextResponse } from 'next/server';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { prisma } from '@/lib/db';
-import { parseBody } from '@/lib/http';
-import { clientAddress, consumeRateLimit } from '@/lib/rate-limit';
-import { passwordResetIsConfigured, sendPasswordResetCode } from '@/lib/password-reset-email';
-import { passwordResetRequestSchema } from '@/lib/validation';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { prisma } from '@/backend/db';
+import { parseBody } from '@/backend/http';
+import { clientAddress, consumeRateLimit } from '@/backend/rate-limit';
+import { passwordResetIsConfigured, sendPasswordResetCode } from '@/backend/password-reset-email';
+import { passwordResetRequestSchema } from '@/backend/validation';
 
 export const runtime = 'nodejs';
 

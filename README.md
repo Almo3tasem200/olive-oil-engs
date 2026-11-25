@@ -6,7 +6,7 @@ Arabic-first e-commerce application for El Mohandeseen Olive Oil.
 
 Initial catalog prices are stored in the database seed, not in the storefront: 500 ml EGP 275, 1 liter EGP 550, and 12 liters EGP 6,100. Prices remain owner-managed. The supplied reference storefront provides a brand logo and matching 500 ml / 1 liter product photos; the owner-supplied 12 liter jerrycan photo is also included. Importing the assets publishes their matching products without changing their database prices.
 
-Delivery zones and COD start disabled/unconfigured. Configure these in Admin after the business owner confirms the live policy. A direct WhatsApp contact link can be shown; no messaging API, email service, or payment provider is configured by default.
+The seed configures free delivery in New Cairo, EGP 50 for the rest of Cairo, and EGP 80 for Giza. Review the exact delivery coverage with the business owner before production. Cash on delivery is enabled by default, but confirm its operational policy before launch. A direct WhatsApp contact link can be shown; no messaging API, email service, or payment provider is configured by default.
 
 ## Store pages
 
@@ -21,6 +21,19 @@ The Arabic storefront is the default language; English pages use the `/en` prefi
 - Cart, checkout, customer account, privacy, and terms have their own pages as needed.
 
 The header links to the main shopping and help pages, and the footer groups store information, contact methods, and configured policies. English pages mirror the same structure under `/en`.
+
+## Project structure
+
+- `src/app/` contains the Next.js route entry points: storefront pages, admin pages, and API route handlers. Keep these files here so Next.js can discover the routes; API handlers should delegate business logic to the backend modules.
+- `src/frontend/components/` contains reusable UI grouped by feature (`store`, `admin`, `cart`, and `checkout`).
+- `src/backend/` contains server-side domain logic, authentication, validation, database access, and infrastructure helpers.
+- `src/shared/` contains pure utilities used by both frontend and backend, such as currency formatting and product labels.
+- `prisma/` contains the database schema, migrations, and seed data. Apply schema changes through migrations.
+- `scripts/` contains one-time setup and asset-import commands; `e2e/` contains browser smoke tests.
+- `public/reference-assets/` contains source images for the approved import workflow.
+- `PHASE-1-PRD.md` and `PHASE-2-UX-ARCHITECTURE.md` record the product requirements and design decisions.
+
+Generated Prisma client files under `src/generated/prisma/`, build output, and Playwright reports are generated artifacts; do not edit or commit them. The top-level `prisma/`, `scripts/`, `public/`, and configuration files remain outside `src/` because their tools expect those locations.
 
 ## Requirements
 
@@ -40,7 +53,7 @@ The header links to the main shopping and help pages, and the footer groups stor
 7. Set INITIAL_ADMIN_EMAIL and INITIAL_ADMIN_PASSWORD in the shell, then run npm run admin:create. Use a strong unique password and remove the variables after setup.
 8. Start the site with npm run dev.
 
-Customers can create an account or order as guests. Orders placed while signed in appear in that customer's account. Admin accounts are private and have no public sign-up. The initial owner is the only account with price-edit permission. Product content managers can edit copy and images but cannot edit prices. Price changes have a separate owner-only server route and an immutable audit/history entry.
+Customers must sign in or create an account to complete checkout; browsing and adding products to the cart remain available without signing in. Orders appear in the account used to place them. Admin accounts are private and have no public sign-up. The initial owner is the only account with price-edit permission. Product content managers can edit copy and images but cannot edit prices. Price changes have a separate owner-only server route and an immutable audit/history entry.
 
 Customers who forget their password can request a one-time six-digit code sent to the email on their account. Codes expire after 10 minutes, allow at most five verification attempts, and are stored as keyed hashes. A successful reset revokes that customer's active sessions. To enable recovery email, configure `RESEND_API_KEY`, `RESEND_FROM_EMAIL` (a verified Resend sender), and the 32-byte hex `APP_ENCRYPTION_KEY` in `.env` or the production secret manager. Without these settings, the reset page explains that recovery is unavailable; other customer account features continue to work.
 

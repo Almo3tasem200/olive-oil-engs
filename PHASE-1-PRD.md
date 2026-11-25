@@ -16,7 +16,7 @@ The project folder is empty. Node.js 24.18.0, npm 11.16.0 (via `npm.cmd`), and G
 
 ## 2. Business understanding
 
-El Mohandeseen Olive Oil is an Egyptian olive oil seller that wants to move orders from social and direct channels into a dependable online storefront. The intended customer is primarily Arabic-speaking and in Cairo/Giza. Customers should be able to order as guests, receive a clear total before submitting, and pay cash on delivery if the owner enables that option. The owner needs to update products, prices, delivery settings, and order statuses without developer help.
+El Mohandeseen Olive Oil is an Egyptian olive oil seller that wants to move orders from social and direct channels into a dependable online storefront. The intended customer is primarily Arabic-speaking and in Cairo/Giza. Customers should be able to browse without signing in, then create an account or sign in to complete an order, receive a clear total before submitting, and pay cash on delivery if the owner enables that option. The owner needs to update products, prices, delivery settings, and order statuses without developer help.
 
 The store must preserve the actual brand and product appearance. Arabic is the default, the experience is RTL, and English is a secondary option. The product catalog described in the brief has three capacities, all in plastic packaging. The site must not make unsupported claims about origin, grade, production, health, certifications, reviews, delivery, or quality.
 
@@ -34,7 +34,7 @@ Availability, stock counts, detailed product copy, product origin/grade, and ima
 
 ### Goals
 
-1. Let a customer browse the three products, compare capacities and prices, and submit a guest order on mobile or desktop.
+1. Let a customer browse the three products, compare capacities and prices, and submit an order after signing in or creating an account on mobile or desktop.
 2. Calculate totals on the server using the current database prices and configured delivery rules.
 3. Persist complete orders with unique references and price snapshots.
 4. Give an authenticated administrator a usable way to see new orders, contact customers, manage statuses, products, prices, and delivery settings.
@@ -52,7 +52,7 @@ Availability, stock counts, detailed product copy, product origin/grade, and ima
 
 ### Out of scope for initial release
 
-- Loyalty points, subscriptions, recurring orders, and personalized marketing. Optional basic customer accounts are supported; guest checkout remains available.
+- Loyalty points, subscriptions, recurring orders, and personalized marketing. Basic customer accounts are required to complete checkout.
 - Online card/wallet payments until provider credentials and explicit activation approval exist.
 - Multi-vendor, multi-currency, international shipping, and automated courier integrations.
 - Product reviews/testimonials until genuine, permissioned submissions are available.
@@ -90,7 +90,7 @@ Availability, stock counts, detailed product copy, product origin/grade, and ima
 - **FR-20:** Allow delivery zones/areas, fees, availability, free delivery, and optional minimum order amount to be configured. No zone should be promised until its details are entered and approved.
 - **FR-21:** Allow business settings such as display name, logo, phone/WhatsApp, social URLs, address, hours, and delivery policy to be edited. Never display missing settings as fabricated values.
 - **FR-22:** Record sensitive admin actions, including product-price and delivery-rule changes, in an audit log.
-- **FR-23:** Let customers optionally register and sign in with a password-protected account. Orders placed while signed in may be listed in that account; guest orders continue to use their private confirmation link. Customer accounts must not grant access to other customers' orders or admin functions.
+- **FR-23:** Let customers register and sign in with a password-protected account. Require authentication to complete checkout and list each order only in the account used to place it. Customer accounts must not grant access to other customers' orders or admin functions.
 
 ## 5. Non-functional requirements
 
@@ -112,7 +112,7 @@ Availability, stock counts, detailed product copy, product origin/grade, and ima
 2. Browse the catalog and compare 500 ml, 1 L, and 12 L options, their approved packaging photos, availability, and current prices.
 3. Open a product detail page, choose a quantity, and add it to cart or choose “Buy now.”
 4. Review/edit the cart. Prices are refreshed from the server; delivery is shown only after the customer selects a supported area.
-5. Enter contact and delivery details as a guest; select COD only if enabled.
+5. Sign in or create an account, then enter contact and delivery details; select COD only if enabled.
 6. Review the full server-calculated order summary and submit once.
 7. Receive a confirmation and private order reference. The order is visible to the administrator even if external notification delivery fails.
 
@@ -284,7 +284,7 @@ These are the material open items before production copy/configuration. They can
 12. What are the return/refund, damaged-product, cancellation, privacy, and customer-data retention policies? Who approves the Arabic/English legal text?
 13. Which hosting/domain accounts, budget, preferred deployment region, and database/image storage services are available? Does the business already own a domain?
 14. Is online payment explicitly out of launch scope (recommended until a provider and credentials are approved)?
-15. Do you approve proceeding to Phase 2 using this product/guest-checkout/admin scope, with the unanswered operational rules shown as configurable but unpublished until decided?
+15. Do you approve proceeding to Phase 2 using this product/account-required-checkout/admin scope, with the unanswered operational rules shown as configurable but unpublished until decided?
 
 ## 13. Phase 1 exit and next gate
 

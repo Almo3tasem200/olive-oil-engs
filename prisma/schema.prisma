@@ -218,7 +218,7 @@ model StoreSettings {
   privacyPolicyEn  String?    @db.Text
   termsAr          String?    @db.Text
   termsEn          String?    @db.Text
-  codEnabled       Boolean    @default(false)
+  codEnabled       Boolean    @default(true)
   updatedById      String?    @db.Uuid
   updatedAt        DateTime   @updatedAt @db.Timestamptz(3)
   updatedBy        AdminUser? @relation("SettingsUpdatedBy", fields: [updatedById], references: [id], onDelete: SetNull)

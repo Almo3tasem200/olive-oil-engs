@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
-import { AdminShell } from '@/components/admin/AdminShell';
-import { getCurrentAdmin } from '@/lib/auth';
+import { AdminShell } from '@/frontend/components/admin/AdminShell';
+import { getCurrentAdmin } from '@/backend/auth';
 
 export const dynamic = 'force-dynamic';
 

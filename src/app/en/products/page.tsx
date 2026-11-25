@@ -1,4 +1,4 @@
-import { ProductListView } from '@/components/store/ProductListView';
+import { ProductListView } from '@/frontend/components/store/ProductListView';
 
 export const dynamic = 'force-dynamic';
 

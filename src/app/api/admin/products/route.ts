@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageProducts } from '@/lib/permissions';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { newProductSchema } from '@/lib/validation';
-import { parseEgpToPiasters } from '@/lib/money';
-import { parseBody, apiFailure, unauthorized, forbidden } from '@/lib/http';
-import { publicMediaUrl } from '@/lib/media';
+import { prisma } from '@/backend/db';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageProducts } from '@/backend/permissions';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { newProductSchema } from '@/backend/validation';
+import { parseEgpToPiasters } from '@/shared/money';
+import { parseBody, apiFailure, unauthorized, forbidden } from '@/backend/http';
+import { publicMediaUrl } from '@/backend/media';
 
 export const runtime = 'nodejs';
 

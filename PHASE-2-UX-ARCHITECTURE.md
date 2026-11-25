@@ -11,7 +11,7 @@ This refines the Phase 1 PRD into a navigation model, interaction flows, respons
 | Topic | Decision | Rationale |
 |---|---|---|
 | Catalog | Each size/package is an independently managed SKU. | The 500 ml, 1 L, and 12 L items have separate prices and availability. |
-| Customer accounts | Optional registration/sign-in with a separate session from admin access; link only orders placed while signed in. | The owner requested visible sign-in/sign-up. Guest checkout remains available; guest orders are not matched by email or phone. |
+| Customer accounts | Registration/sign-in with a separate session from admin access; authentication is required to complete checkout and orders are linked to the signed-in customer. | The owner requested visible sign-in/sign-up and customer sign-in before completing checkout. |
 | Money | Store integer piastres; compute price, delivery, and total on the server at quote and submission. | Avoid rounding errors, browser price manipulation, and changed historical orders. |
 | Delivery | Enabled admin delivery zones define coverage and fees. | Current policy is unknown. Historical free delivery is not published by default. |
 | Payment | COD only, behind an admin toggle. No online gateway. | Matches the brief without implying a provider is active. |
@@ -161,7 +161,7 @@ The brief suggests olive green, gold, cream, and white. Since logo and packaging
 | Notification | Optional order FK, channel/type/status, attempts, next-attempt time, redacted error/provider reference. |
 | AuditLog | Admin actor, action/entity, redacted before/after values, time, request correlation ID. Never log secrets or tokens. |
 
-Guest details remain immutable order snapshots. Account orders are linked only when the customer is signed in at checkout; guest orders are not automatically matched by email or phone. Account APIs expose only that customer's order number, status, amount, and date. Discounts are zero and unavailable in MVP. Inventory quantities require atomic reservation, expiry, and restock policy; a stock field alone cannot prevent overselling.
+Customer details remain immutable order snapshots. Orders are linked to the customer signed in at checkout. Account APIs expose only that customer's order number, status, amount, and date. Discounts are zero and unavailable in MVP. Inventory quantities require atomic reservation, expiry, and restock policy; a stock field alone cannot prevent overselling.
 
 ~~~mermaid
 erDiagram
@@ -234,7 +234,7 @@ Security:
 - Hash passwords with Argon2id, tuned for the selected host; store hashes only and provision the first owner privately.
 - Roles: OWNER manages staff/settings; MANAGER manages products/delivery/orders; FULFILLMENT views required order details and advances allowed statuses. Start with one owner.
 - Enforce authorization near every protected read/write, not only by hiding links; return minimal DTOs.
-- Rate-limit login and guest order endpoints. Use secure HTTP-only SameSite cookies, TLS, CSP, and same-origin/CSRF safeguards for cookie-authenticated mutations.
+- Rate-limit login and order endpoints. Use secure HTTP-only SameSite cookies, TLS, CSP, and same-origin/CSRF safeguards for cookie-authenticated mutations.
 - Validate upload contents/type/size/dimensions. Keep provider credentials in host secret storage, never store settings, database exports, client bundles, or logs.
 - Retain customer data only under owner-approved policy; audit access and sensitive admin changes.
 

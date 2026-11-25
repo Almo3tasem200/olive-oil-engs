@@ -1,4 +1,4 @@
-import { HowToOrderView } from '@/components/store/PublicInfoViews';
+import { HowToOrderView } from '@/frontend/components/store/PublicInfoViews';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'طريقة الطلب' };

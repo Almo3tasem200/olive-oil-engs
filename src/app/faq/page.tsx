@@ -1,4 +1,4 @@
-import { FaqView } from '@/components/store/PublicInfoViews';
+import { FaqView } from '@/frontend/components/store/PublicInfoViews';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'الأسئلة الشائعة' };

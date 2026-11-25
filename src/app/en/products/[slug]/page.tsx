@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
-import { ProductDetailView } from '@/components/store/ProductDetailView';
-import { getPublicProductBySlug } from '@/lib/catalog';
+import { ProductDetailView } from '@/frontend/components/store/ProductDetailView';
+import { getPublicProductBySlug } from '@/backend/catalog';
 
 export const dynamic = 'force-dynamic';
 

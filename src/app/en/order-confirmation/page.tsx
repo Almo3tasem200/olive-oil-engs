@@ -1,4 +1,4 @@
-import { OrderConfirmationView } from '@/components/store/OrderConfirmationView';
+import { OrderConfirmationView } from '@/frontend/components/store/OrderConfirmationView';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };

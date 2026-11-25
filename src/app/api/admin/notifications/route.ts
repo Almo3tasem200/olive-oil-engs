@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { z } from 'zod';
-import { prisma } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageOrders } from '@/lib/permissions';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { parseBody, unauthorized, forbidden } from '@/lib/http';
+import { prisma } from '@/backend/db';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageOrders } from '@/backend/permissions';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { parseBody, unauthorized, forbidden } from '@/backend/http';
 
 export const runtime = 'nodejs';
 

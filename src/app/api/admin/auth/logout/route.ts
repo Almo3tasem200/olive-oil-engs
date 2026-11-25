@@ -1,9 +1,9 @@
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { sessionCookieName } from '@/lib/auth';
-import { sha256 } from '@/lib/security';
+import { prisma } from '@/backend/db';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { sessionCookieName } from '@/backend/auth';
+import { sha256 } from '@/backend/security';
 
 export const runtime = 'nodejs';
 

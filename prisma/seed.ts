@@ -14,9 +14,51 @@ async function main() {
       id: 1,
       businessNameAr: 'زيت زيتون المهندسين',
       businessNameEn: 'El Mohandeseen Olive Oil',
-      codEnabled: false,
+      codEnabled: true,
     },
     update: {},
+  });
+
+  await prisma.deliveryZone.createMany({
+    data: [
+      {
+        code: 'NEW-CAIRO',
+        governorateAr: 'القاهرة',
+        governorateEn: 'Cairo',
+        cityAr: 'القاهرة الجديدة',
+        cityEn: 'New Cairo',
+        areaAr: 'القاهرة الجديدة',
+        areaEn: 'New Cairo',
+        feePiasters: 0,
+        freeDeliveryOverPiasters: null,
+        isActive: true,
+      },
+      {
+        code: 'CAIRO-REST',
+        governorateAr: 'القاهرة',
+        governorateEn: 'Cairo',
+        cityAr: 'القاهرة',
+        cityEn: 'Cairo',
+        areaAr: 'باقي القاهرة',
+        areaEn: 'Rest of Cairo',
+        feePiasters: 5000,
+        freeDeliveryOverPiasters: null,
+        isActive: true,
+      },
+      {
+        code: 'GIZA',
+        governorateAr: 'الجيزة',
+        governorateEn: 'Giza',
+        cityAr: 'الجيزة',
+        cityEn: 'Giza',
+        areaAr: 'جميع مناطق الجيزة',
+        areaEn: 'All Giza areas',
+        feePiasters: 8000,
+        freeDeliveryOverPiasters: null,
+        isActive: true,
+      },
+    ],
+    skipDuplicates: true,
   });
 
   const products = [
@@ -70,7 +112,7 @@ async function main() {
     });
   }
 
-  console.log('Store settings and three catalog products are ready. Products remain unpublished until approved photos are uploaded.');
+  console.log('Store settings, delivery zones, and three catalog products are ready. Products remain unpublished until approved photos are uploaded.');
 }
 
 main()

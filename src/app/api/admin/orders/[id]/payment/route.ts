@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { parseBody, apiFailure, unauthorized, forbidden } from '@/lib/http';
+import { prisma } from '@/backend/db';
+import { getCurrentAdmin } from '@/backend/auth';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { parseBody, apiFailure, unauthorized, forbidden } from '@/backend/http';
 import { z } from 'zod';
 
 export const runtime = 'nodejs';

@@ -1,4 +1,4 @@
-import { DeliveryView } from '@/components/store/PublicInfoViews';
+import { DeliveryView } from '@/frontend/components/store/PublicInfoViews';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { title: 'معلومات التوصيل' };

@@ -1,4 +1,4 @@
-import { OrderDetail } from '@/components/admin/OrderDetail';
+import { OrderDetail } from '@/frontend/components/admin/OrderDetail';
 
 export const dynamic = 'force-dynamic';
 

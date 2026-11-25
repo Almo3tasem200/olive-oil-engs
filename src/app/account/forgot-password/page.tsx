@@ -1,5 +1,5 @@
-import { CustomerPasswordResetForm } from '@/components/store/CustomerPasswordResetForm';
-import { StorePageShell } from '@/components/store/StorePageShell';
+import { CustomerPasswordResetForm } from '@/frontend/components/store/CustomerPasswordResetForm';
+import { StorePageShell } from '@/frontend/components/store/StorePageShell';
 
 export const metadata = { title: 'استعادة كلمة المرور', robots: { index: false, follow: false } };
 

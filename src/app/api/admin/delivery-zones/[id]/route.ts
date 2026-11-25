@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageDelivery } from '@/lib/permissions';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { deliveryZoneSchema } from '@/lib/validation';
-import { parseEgpToPiasters } from '@/lib/money';
-import { parseBody, apiFailure, unauthorized, forbidden } from '@/lib/http';
-import { writeAudit } from '@/lib/audit';
+import { prisma } from '@/backend/db';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageDelivery } from '@/backend/permissions';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { deliveryZoneSchema } from '@/backend/validation';
+import { parseEgpToPiasters } from '@/shared/money';
+import { parseBody, apiFailure, unauthorized, forbidden } from '@/backend/http';
+import { writeAudit } from '@/backend/audit';
 
 export const runtime = 'nodejs';
 
@@ -36,7 +36,7 @@ export async function PATCH(request: Request, context: Context) {
         cityEn: parsed.data.cityEn,
         areaAr: parsed.data.areaAr,
         areaEn: parsed.data.areaEn,
-        feePiasters: parseEgpToPiasters(parsed.data.feeEgp),
+        feePiasters: parseEgpToPiasters(parsed.data.feeEgp, { allowZero: true }),
         freeDeliveryOverPiasters: parsed.data.freeDeliveryOverEgp
           ? parseEgpToPiasters(parsed.data.freeDeliveryOverEgp)
           : null,

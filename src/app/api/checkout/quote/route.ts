@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { quoteCart } from '@/lib/orders';
-import { parseBody, apiFailure } from '@/lib/http';
-import { quoteSchema } from '@/lib/validation';
-import { clientAddress, consumeRateLimit } from '@/lib/rate-limit';
+import { quoteCart } from '@/backend/orders';
+import { parseBody, apiFailure } from '@/backend/http';
+import { quoteSchema } from '@/backend/validation';
+import { clientAddress, consumeRateLimit } from '@/backend/rate-limit';
 
 export const runtime = 'nodejs';
 

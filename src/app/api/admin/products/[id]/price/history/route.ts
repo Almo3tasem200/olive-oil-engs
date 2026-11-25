@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canEditPrices } from '@/lib/permissions';
-import { unauthorized, forbidden } from '@/lib/http';
+import { prisma } from '@/backend/db';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canEditPrices } from '@/backend/permissions';
+import { unauthorized, forbidden } from '@/backend/http';
 
 export const runtime = 'nodejs';
 

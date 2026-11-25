@@ -1,5 +1,5 @@
-import { CustomerAccountPanel } from '@/components/store/CustomerAccountPanel';
-import { StorePageShell } from '@/components/store/StorePageShell';
+import { CustomerAccountPanel } from '@/frontend/components/store/CustomerAccountPanel';
+import { StorePageShell } from '@/frontend/components/store/StorePageShell';
 
 export const metadata = { title: 'My account', robots: { index: false, follow: false } };
 

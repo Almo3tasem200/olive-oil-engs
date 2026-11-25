@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
-import { prisma } from '@/lib/db';
-import { StorePageShell } from '@/components/store/StorePageShell';
+import { prisma } from '@/backend/db';
+import { StorePageShell } from '@/frontend/components/store/StorePageShell';
 
 export const dynamic = 'force-dynamic';
 export const metadata = { robots: { index: false, follow: false } };

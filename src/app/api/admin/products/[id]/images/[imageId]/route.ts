@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/db';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageProducts } from '@/lib/permissions';
-import { isSameOriginRequest } from '@/lib/csrf';
-import { unauthorized, forbidden, apiFailure } from '@/lib/http';
-import { deleteMediaObject } from '@/lib/media';
+import { prisma } from '@/backend/db';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageProducts } from '@/backend/permissions';
+import { isSameOriginRequest } from '@/backend/csrf';
+import { unauthorized, forbidden, apiFailure } from '@/backend/http';
+import { deleteMediaObject } from '@/backend/media';
 
 export const runtime = 'nodejs';
 

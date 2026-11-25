@@ -1,6 +1,6 @@
-import { prisma } from '@/lib/db';
-import { StorePageShell } from '@/components/store/StorePageShell';
-import { CartView } from '@/components/cart/CartView';
+import { prisma } from '@/backend/db';
+import { StorePageShell } from '@/frontend/components/store/StorePageShell';
+import { CartView } from '@/frontend/components/cart/CartView';
 
 export const dynamic = 'force-dynamic';
 

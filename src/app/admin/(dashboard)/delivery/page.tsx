@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import { DeliveryAdmin } from '@/components/admin/DeliveryAdmin';
-import { getCurrentAdmin } from '@/lib/auth';
-import { canManageDelivery } from '@/lib/permissions';
+import { DeliveryAdmin } from '@/frontend/components/admin/DeliveryAdmin';
+import { getCurrentAdmin } from '@/backend/auth';
+import { canManageDelivery } from '@/backend/permissions';
 
 export const dynamic = 'force-dynamic';
 
