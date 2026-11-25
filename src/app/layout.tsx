@@ -20,6 +20,11 @@ export const metadata: Metadata = {
     description: 'تصفّح المنتجات واطلب بسهولة.',
   },
   robots: { index: true, follow: true },
+  icons: {
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export const viewport: Viewport = {
